@@ -7,9 +7,9 @@ using UnityEngine;
 /// </summary>
 public class CoverSystem : MonoBehaviour
 {
-    [SerializeField] private Transform _playerTransform;
-    [SerializeField] private List<SafeZoneCover> safezoneCoverViews = new List<SafeZoneCover>();
-    [SerializeField] private CoverView currentSceneCoverView;
+    private Transform _playerTransform;
+    private List<SafeZoneCover> safezoneCoverViews = new List<SafeZoneCover>();
+    private CoverView currentSceneCoverView;
 
     private Collider2D _playerCollider2D;
 
