@@ -47,6 +47,12 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
         
     }
 
+    //
+    public void SetPlayerView(CheckPointData checkPointData)
+    {
+        this.transform.position = checkPointData.playerPosition; // 设置玩家位置
+    }
+
     private void OnHorizontalMove(float horizontal)
     {
         if (!isMovementEnabled)
@@ -115,12 +121,6 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
 
     }
 
-    private void OnDestroy()
-    {
-        EventCenter.Instance.RemoveListener<float>("左右移动", OnHorizontalMove);
-        //EventCenter.Instance.RemoveListener<float>("上下移动", OnVerticalMove);
-        EventCenter.Instance.RemoveListener("跳跃", OnJump);
-    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -142,6 +142,13 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
             isGrounded = false; // 离开地面，设置为不在地面上
             //Debug.Log("离开地面");
         }
+    }
+
+    private void OnDestroy()
+    {
+        EventCenter.Instance.RemoveListener<float>("左右移动", OnHorizontalMove);
+        //EventCenter.Instance.RemoveListener<float>("上下移动", OnVerticalMove);
+        EventCenter.Instance.RemoveListener("跳跃", OnJump);
     }
 
 }
