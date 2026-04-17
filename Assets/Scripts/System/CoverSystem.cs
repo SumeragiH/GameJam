@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
 
 /// <summary>
@@ -28,12 +29,16 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
     {
         EventCenter.Instance.AddListener<CoverView>("玩家进入遮罩", OnPlayerEnteredCover);
         EventCenter.Instance.AddListener<CoverView>("玩家离开遮罩", OnPlayerExitedCover);
+        EventCenter.Instance.AddListener<int>("设定遮罩序号", SetCurrentSceneCoverViewIndex);
+        EventCenter.Instance.AddListener<List<SafeZoneView>>("同步安全区遮罩", SyncSafeZoneCovers);
     }
 
     private void OnDisable()
     {
         EventCenter.Instance.RemoveListener<CoverView>("玩家进入遮罩", OnPlayerEnteredCover);
         EventCenter.Instance.RemoveListener<CoverView>("玩家离开遮罩", OnPlayerExitedCover);
+        EventCenter.Instance.RemoveListener<int>("设定遮罩序号", SetCurrentSceneCoverViewIndex);
+        EventCenter.Instance.RemoveListener<List<SafeZoneView>>("同步安全区遮罩", SyncSafeZoneCovers);
     }
 
     void Start()
@@ -140,6 +145,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         if (activeCovers.Add(coverView))
         {
             RefreshCoverState();
+            Debug.Log("玩家进入遮罩");
         }
     }
 
@@ -153,6 +159,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         if (activeCovers.Remove(coverView))
         {
             RefreshCoverState();
+            Debug.Log("玩家离开遮罩");
         }
     }
 }

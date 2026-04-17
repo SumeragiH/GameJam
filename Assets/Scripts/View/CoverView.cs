@@ -39,36 +39,39 @@ public abstract class CoverView : MonoBehaviour
         EventCenter.Instance.EventTrigger<CoverView>("玩家离开遮罩", this);
     }
 
-    // private void OnTriggerEnter2D(Collider2D other)
-    // {
-    //     TryRaiseEnter(other);
-    // }
-
-    // private void OnTriggerExit2D(Collider2D other)
-    // {
-    //     TryRaiseExit(other);
-    // }
-
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         TryRaiseEnter(other);
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnTriggerExit2D(Collider2D other)
     {
         TryRaiseExit(other);
     }
 
+    // private void OnTriggerEnter(Collider other)
+    // {
+    //     TryRaiseEnter(other);
+    // }
+
+    // private void OnTriggerExit(Collider other)
+    // {
+    //     TryRaiseExit(other);
+    // }
+
     private void TryRaiseEnter(Component other)
     {
+        Debug.Log("TryRaiseEnter");
         if (!IsPlayerCollider(other))
         {
             return;
         }
 
         int colliderId = other.GetInstanceID();
+        Debug.Log("check collider id");
         if (_insidePlayerColliderIds.Add(colliderId) && _insidePlayerColliderIds.Count == 1)
         {
+            Debug.Log("message emit");
             EventCenter.Instance.EventTrigger<CoverView>("玩家进入遮罩", this);
         }
     }

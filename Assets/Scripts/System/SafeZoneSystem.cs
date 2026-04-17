@@ -9,6 +9,6 @@ public class SafeZoneSystem : SingletonBaseWithMono<SafeZoneSystem>
 
     void Start()
     {
-        CoverSystem.Instance.SyncSafeZoneCovers(safeZoneViews);
+        EventCenter.Instance.EventTrigger("同步安全区遮罩", safeZoneViews);
     }
 }
