@@ -45,9 +45,4 @@ public class UserInputSystem : MonoBehaviour
         }
     }
 
-    private void CheckShift(bool isShift)
-    {
-        //切换
-    }
-
 }
