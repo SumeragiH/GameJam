@@ -6,10 +6,14 @@ using System.Collections;
 /// </summary>
 public abstract class CoverView : MonoBehaviour
 {
-    [SerializeField] private float _cooldownTime = 5f;
+    [SerializeField] protected float _cooldownTime = 5f;
     public float CooldownTime => _cooldownTime;
-    private float _currentCooldown = 0f;
+    protected float _currentCooldown = 0f;
     public virtual bool IsReady => _currentCooldown <= 0f;
+
+    virtual protected void Start()
+    {
+    }
 
     void FixedUpdate()
     {
