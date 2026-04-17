@@ -43,4 +43,9 @@ public class UserInputSystem : SingletonBaseWithMono<UserInputSystem>
             EventCenter.Instance.EventTrigger("跳跃");
     }
 
+    private void CheckShift(bool isShift)
+    {
+        //切换
+    }
+
 }
