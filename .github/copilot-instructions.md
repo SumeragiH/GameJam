@@ -25,9 +25,21 @@ Use Unity Editor CLI (Windows examples):
 Notes:
 - `com.unity.test-framework` is included in `Packages/manifest.json`.
 - There is currently no dedicated lint config/tooling in-repo (`.editorconfig`/`.ruleset` not present).
+- Fast C# compile check used in this repo: `dotnet build .\GameJam.sln -nologo`
 
 ## High-level architecture
 - Runtime scripts are split into **System** and **View** layers under `Assets/Scripts`.
+- URP 2D render pipeline is configured by:
+  - `Assets/Settings/UniversalRP.asset`
+  - `Assets/Settings/Renderer2D.asset`
+- Fullscreen dimming outside selected regions is implemented with:
+  - `Assets/Scripts/System/Rendering/DarkenOutsideRegionsRendererFeature.cs`
+  - `Assets/Shader/DarkenOutsideRegions.shader`
+  - `Assets/Settings/DarkenOutsideRegionsFeature.asset` (linked in `Renderer2D.asset`)
+- Region data flow:
+  - `RegionProviderBase` + concrete providers (`CircleRegionProvider`, `BoxRegionProvider`) produce region shape/position parameters
+  - `RegionMaskManager` collects providers, filters by group mask, and uploads shader arrays each frame
+  - renderer feature pass blits camera color through the shader; pixels outside all active regions are multiplied by outside brightness
 - `Assets/Scripts/View/CoverView.cs` is the trigger entry point for cover detection:
   - emits `PlayerEnteredCover` / `PlayerExitedCover` events from trigger callbacks
   - handles multi-collider player overlap safely inside each cover
@@ -38,7 +50,9 @@ Notes:
   - keeps registered covers (`currentSceneCoverView` + `safezoneCoverViews`) and reacts to `CoverView` enter/exit events
   - tracks currently overlapped covers with event-driven updates (no per-frame bounds scanning)
   - exposes state via `IsPlayerInCover`, `ActiveCovers`, `SafeZoneStateChanged`, and `IsInSafeZone()`
-- Lighting is authored directly on scene/prefab objects (no dedicated runtime `LightingSystem` controller script in current codebase).
+- Sample scene integration:
+  - `SampleScene` has a `RegionMaskManager` object under `-- SYSTEM --`
+  - `SafeZone` uses `CircleRegionProvider` and trigger collider (`m_IsTrigger: 1`)
 - Singleton base classes in `Assets/Scripts/System/Base` are shared infrastructure:
   - `SingletonBaseWithMono<T>` for persistent MonoBehaviour managers (`DontDestroyOnLoad`)
   - `SingletonBaseWithoutMono<T>` for plain C# singleton services
@@ -48,6 +62,8 @@ Notes:
 - **Inspector-first fields**: private serialized fields use underscore prefix (`[SerializeField] private ... _name`) and are exposed via read-only properties where needed.
 - **Event-driven gameplay state**: trigger callbacks in `CoverView` publish overlap events, and systems react to those events instead of polling collisions every frame.
 - **Multi-collider safe handling**: a cover only emits enter on first player collider and exit on last player collider, preventing duplicate state toggles.
-- **Prefab/scene-owned light setup**: visual lighting is configured on prefab/scene components, not generated/switched by centralized light-profile code.
+- **Screen-space mask convention**: providers convert world parameters to viewport-space (`WorldToViewportPoint`) before shader upload.
+- **Region selection control**: which regions participate is controlled by provider enable state + provider group index + `RegionMaskManager` active group mask.
+- **URP feature-first post effect**: new full-screen effects should prefer `ScriptableRendererFeature + ScriptableRenderPass` instead of per-camera hacks.
 - **Framework-style extension points**: common behavior lives in abstract `CoverView`; concrete cover types override behavior instead of duplicating state logic.
 - **Singleton usage pattern**: systems intended to be global use the shared singleton base types rather than ad-hoc static instances.

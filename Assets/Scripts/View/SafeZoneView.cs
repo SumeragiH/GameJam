@@ -7,8 +7,20 @@ using UnityEngine;
 public class SafeZoneView : MonoBehaviour
 {
     [SerializeField] private SafeZoneCover _coverView;
+    [SerializeField] private CircleRegionProvider regionProvider;
     public SafeZoneCover CoverView => _coverView;
-    public bool isActive { get; private set; } = true;
+    private bool _isActive = true;
+
+    public bool IsActive
+    {
+        get => _isActive;
+        set
+        {
+            if (_isActive == value) return;
+            _isActive = value;
+            regionProvider.enabled = IsActive;
+        }
+    }
 
     private void OnValidate()
     {

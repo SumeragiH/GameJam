@@ -110,7 +110,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         for (int i = safezoneCoverViews.Count - 1; i >= 0; i--)
         {
             SafeZoneCover safeZoneCover = safezoneCoverViews[i].CoverView;
-            if (safeZoneCover != null && safezoneCoverViews[i].isActive)
+            if (safeZoneCover != null && safezoneCoverViews[i].IsActive)
             {
                 allCovers.Add(safeZoneCover);
             }
