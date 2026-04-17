@@ -1,18 +1,18 @@
 using UnityEngine;
-using System.Collections;
 
 public class SafeZoneCover : CoverView
 {
-    public override bool IsReady => false; // 不可更新
+    public override bool IsReady => true;
 
     override protected void Start()
     {
         base.Start();
-        _cooldownTime = 0;
+        _cooldownTime = 0f;
+        _currentCooldown = 0f;
     }
 
     public override void ActivateCover()
     {
-        throw new System.NotImplementedException("SafeZoneCover does not implement ActivateCover because it is always active.");
+        // SafeZoneCover常驻生效，不需要主动触发。
     }
 }

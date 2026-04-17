@@ -1,27 +1,42 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
 /// CoverSystem, 包含一个当前场景特定的CoverView, 以及当前场景的SafeZoneCover列表
 /// </summary>
-public class CoverSystem : MonoBehaviour
+public class CoverSystem : SingletonBaseWithMono<CoverSystem>
 {
-    private Transform _playerTransform;
-    private List<SafeZoneCover> safezoneCoverViews = new List<SafeZoneCover>();
-    private CoverView currentSceneCoverView;
+    [SerializeField] private Transform _playerTransform;
+    [SerializeField] private List<SafeZoneCover> safezoneCoverViews = new List<SafeZoneCover>();
+    [SerializeField] private CoverView currentSceneCoverView;
 
-    private Collider2D _playerCollider2D;
+    private readonly HashSet<CoverView> allCovers = new HashSet<CoverView>();
+    private readonly HashSet<CoverView> activeCovers = new HashSet<CoverView>();
+    public event Action<bool> SafeZoneStateChanged;
+    /// <summary>
+    /// 当前玩家是否在遮罩之中（cover之中）
+    /// </summary>
+    public bool IsPlayerInCover { get; private set; }
+    public IReadOnlyCollection<CoverView> ActiveCovers => activeCovers;
+
+    private void OnEnable()
+    {
+        CoverView.PlayerEnteredCover += OnPlayerEnteredCover;
+        CoverView.PlayerExitedCover += OnPlayerExitedCover;
+    }
+
+    private void OnDisable()
+    {
+        CoverView.PlayerEnteredCover -= OnPlayerEnteredCover;
+        CoverView.PlayerExitedCover -= OnPlayerExitedCover;
+    }
 
     void Start()
     {
-        EnsurePlayerCollider();
-        ResolveCurrentSceneCover();
-
-        if (safezoneCoverViews.Count == 0)
-        {
-            safezoneCoverViews.AddRange(FindObjectsOfType<SafeZoneCover>(true));
-        }
+        ResolvePlayerTransform();
+        RebuildCoverCache();
+        RefreshCoverState();
     }
 
     internal void SyncSafeZoneCovers(List<SafeZoneView> safeZoneViews)
@@ -37,7 +52,7 @@ public class CoverSystem : MonoBehaviour
                 continue;
             }
 
-            SafeZoneCover cover = safeZoneView.GetComponentInChildren<SafeZoneCover>(true);
+            SafeZoneCover cover = safeZoneView.CoverView;
             if (cover != null)
             {
                 uniqueCovers.Add(cover);
@@ -45,124 +60,113 @@ public class CoverSystem : MonoBehaviour
         }
 
         safezoneCoverViews.AddRange(uniqueCovers);
+        RebuildCoverCache();
+        RefreshCoverState();
     }
 
     /// <summary>
-    /// 检测玩家是否与safezoneCoverViews及currentSceneCoverView碰撞箱发生碰撞，如果发生说明在安全区内，返回true，否则返回false
+    /// 当前是否处在可进入区域（当前场景Cover或SafeZoneCover）
     /// </summary>
     /// <returns></returns>
     public bool IsInSafeZone()
     {
-        if (!EnsurePlayerCollider())
+        return IsPlayerInCover;
+    }
+
+    private void RebuildCoverCache()
+    {
+        allCovers.Clear();
+
+        if (safezoneCoverViews.Count == 0)
         {
-            Debug.LogWarning("CoverSystem: Player collider not found, cannot evaluate safe zone.");
-            return false;
+            safezoneCoverViews.AddRange(FindObjectsOfType<SafeZoneCover>(true));
         }
 
-        if (IsCollidingWithCover(currentSceneCoverView))
+        if (currentSceneCoverView == null)
         {
-            return true;
-        }
-
-        for (int i = 0; i < safezoneCoverViews.Count; i++)
-        {
-            if (IsCollidingWithCover(safezoneCoverViews[i]))
+            CoverView[] allCoverViews = FindObjectsOfType<CoverView>(true);
+            for (int i = 0; i < allCoverViews.Length; i++)
             {
-                return true;
+                CoverView coverView = allCoverViews[i];
+                if (coverView is SafeZoneCover)
+                {
+                    continue;
+                }
+
+                currentSceneCoverView = coverView;
+                break;
             }
         }
 
-        return false;
-    }
-
-    private void ResolveCurrentSceneCover()
-    {
         if (currentSceneCoverView != null)
         {
-            return;
+            allCovers.Add(currentSceneCoverView);
         }
 
-        CoverView[] allCoverViews = FindObjectsOfType<CoverView>(true);
-        for (int i = 0; i < allCoverViews.Length; i++)
+        for (int i = safezoneCoverViews.Count - 1; i >= 0; i--)
         {
-            CoverView coverView = allCoverViews[i];
-            if (coverView is SafeZoneCover)
+            SafeZoneCover safeZoneCover = safezoneCoverViews[i];
+            if (safeZoneCover == null)
             {
+                safezoneCoverViews.RemoveAt(i);
                 continue;
             }
 
-            currentSceneCoverView = coverView;
+            allCovers.Add(safeZoneCover);
+        }
+
+    }
+
+    private void RefreshCoverState()
+    {
+        activeCovers.RemoveWhere(cover => cover == null || !allCovers.Contains(cover));
+
+        bool previousSafeState = IsPlayerInCover;
+        IsPlayerInCover = activeCovers.Count > 0;
+
+        if (previousSafeState != IsPlayerInCover)
+        {
+            SafeZoneStateChanged?.Invoke(IsPlayerInCover);
+        }
+    }
+
+    private void ResolvePlayerTransform()
+    {
+        if (_playerTransform != null)
+        {
             return;
         }
+
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            _playerTransform = player.transform;
+        }
     }
 
-    private bool EnsurePlayerCollider()
+    private void OnPlayerEnteredCover(CoverView coverView)
     {
-        if (_playerTransform == null)
+        if (coverView == null || !allCovers.Contains(coverView))
         {
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
-            {
-                _playerTransform = player.transform;
-            }
+            return;
         }
 
-        if (_playerTransform == null)
+        if (activeCovers.Add(coverView))
         {
-            return false;
+            RefreshCoverState();
         }
-
-        if (_playerCollider2D == null)
-        {
-            _playerCollider2D = _playerTransform.GetComponent<Collider2D>();
-        }
-
-        return _playerCollider2D != null;
     }
 
-    private bool IsCollidingWithCover(CoverView coverView)
+    private void OnPlayerExitedCover(CoverView coverView)
     {
         if (coverView == null)
         {
-            return false;
+            return;
         }
 
-        if (!TryGetPlayerBounds(out Bounds playerBounds))
+        if (activeCovers.Remove(coverView))
         {
-            return false;
+            RefreshCoverState();
         }
-
-        if (!TryGetCoverBounds(coverView, out Bounds coverBounds))
-        {
-            return false;
-        }
-
-        return playerBounds.Intersects(coverBounds);
     }
-
-    private bool TryGetPlayerBounds(out Bounds bounds)
-    {
-        if (_playerCollider2D != null)
-        {
-            bounds = _playerCollider2D.bounds;
-            return true;
-        }
-
-        bounds = default;
-        return false;
-    }
-
-    private bool TryGetCoverBounds(CoverView coverView, out Bounds bounds)
-    {
-        Collider2D coverCollider2D = coverView.GetComponent<Collider2D>();
-        if (coverCollider2D != null)
-        {
-            bounds = coverCollider2D.bounds;
-            return true;
-        }
-
-        bounds = default;
-        return false;
-    }
-
 }

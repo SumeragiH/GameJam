@@ -28,16 +28,17 @@ Notes:
 
 ## High-level architecture
 - Runtime scripts are split into **System** and **View** layers under `Assets/Scripts`.
-- `Assets/Scripts/View/CoverView.cs` is the core abstraction for cover/safe-zone behavior:
-  - abstract `ActivateCover()`
-  - cooldown state (`_cooldownTime`, `_currentCooldown`)
-  - overridable readiness (`IsReady`)
-- `SafeZoneCover` (`Assets/Scripts/View/CoverViews/SafeZoneCover.cs`) is a `CoverView` specialization intended to be always active in safe zones.
-- `CoverSystem` (`Assets/Scripts/System/CoverSystem.cs`) is intended to own:
-  - scene-level `CoverView` (`currentSceneCoverView`)
-  - multiple safe-zone covers (`List<SafeZoneCover>`)
-  - final safety query (`IsInSafeZone()`), currently TODO.
-- `SafeZoneSystem` (`Assets/Scripts/System/SafeZoneSystem.cs`) is intended to discover scene `SafeZoneView` instances and sync them to `CoverSystem` (TODO in code).
+- `Assets/Scripts/View/CoverView.cs` is the trigger entry point for cover detection:
+  - emits `PlayerEnteredCover` / `PlayerExitedCover` events from trigger callbacks
+  - handles multi-collider player overlap safely inside each cover
+  - filters player by tag (`_playerTag`, default `Player`)
+- `SafeZoneCover` (`Assets/Scripts/View/CoverViews/SafeZoneCover.cs`) is a `CoverView` specialization for always-on safe areas.
+- `SafeZoneSystem` (`Assets/Scripts/System/SafeZoneSystem.cs`) discovers `SafeZoneView` objects in scene and syncs their covers to `CoverSystem`.
+- `CoverSystem` (`Assets/Scripts/System/CoverSystem.cs`) is the gameplay state owner:
+  - keeps registered covers (`currentSceneCoverView` + `safezoneCoverViews`) and reacts to `CoverView` enter/exit events
+  - tracks currently overlapped covers with event-driven updates (no per-frame bounds scanning)
+  - exposes state via `IsPlayerInCover`, `ActiveCovers`, `SafeZoneStateChanged`, and `IsInSafeZone()`
+- Lighting is authored directly on scene/prefab objects (no dedicated runtime `LightingSystem` controller script in current codebase).
 - Singleton base classes in `Assets/Scripts/System/Base` are shared infrastructure:
   - `SingletonBaseWithMono<T>` for persistent MonoBehaviour managers (`DontDestroyOnLoad`)
   - `SingletonBaseWithoutMono<T>` for plain C# singleton services
@@ -45,6 +46,8 @@ Notes:
 ## Key conventions in this codebase
 - **Folder-role convention**: gameplay orchestration in `System/`, scene-attached entities in `View/`.
 - **Inspector-first fields**: private serialized fields use underscore prefix (`[SerializeField] private ... _name`) and are exposed via read-only properties where needed.
+- **Event-driven gameplay state**: trigger callbacks in `CoverView` publish overlap events, and systems react to those events instead of polling collisions every frame.
+- **Multi-collider safe handling**: a cover only emits enter on first player collider and exit on last player collider, preventing duplicate state toggles.
+- **Prefab/scene-owned light setup**: visual lighting is configured on prefab/scene components, not generated/switched by centralized light-profile code.
 - **Framework-style extension points**: common behavior lives in abstract `CoverView`; concrete cover types override behavior instead of duplicating state logic.
 - **Singleton usage pattern**: systems intended to be global use the shared singleton base types rather than ad-hoc static instances.
-- **Implementation status is signaled inline**: TODO comments in `CoverSystem` and `SafeZoneSystem` are the source of truth for incomplete wiring between systems.
