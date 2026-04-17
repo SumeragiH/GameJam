@@ -397,6 +397,7 @@ Transform:
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &560541941
 GameObject:
   m_ObjectHideFlags: 0
@@ -497,6 +498,8 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+=======
+>>>>>>> parent of 84d1a10 (单例基类可以删除，玩家移动添加动画控制)
 =======
 >>>>>>> parent of 84d1a10 (单例基类可以删除，玩家移动添加动画控制)
 --- !u!1 &619394800
@@ -808,4 +811,7 @@ SceneRoots:
 <<<<<<< HEAD
 =======
   - {fileID: 18450188}
+<<<<<<< HEAD
+>>>>>>> parent of 84d1a10 (单例基类可以删除，玩家移动添加动画控制)
+=======
 >>>>>>> parent of 84d1a10 (单例基类可以删除，玩家移动添加动画控制)
