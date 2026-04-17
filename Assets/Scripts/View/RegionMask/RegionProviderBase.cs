@@ -4,7 +4,7 @@ public abstract class RegionProviderBase : MonoBehaviour, IRegionMaskProvider
 {
     [SerializeField] private bool _providerEnabled = true;
     [SerializeField, Range(0, 31)] private int _regionGroup = 0;
-    [SerializeField, Min(0f)] private float _featherViewport = 0.01f;
+    [SerializeField, Min(0f)] private float _featherViewport = 0f;
 
     public bool IsProviderEnabled => _providerEnabled && isActiveAndEnabled;
     public int RegionGroup => Mathf.Clamp(_regionGroup, 0, 31);
