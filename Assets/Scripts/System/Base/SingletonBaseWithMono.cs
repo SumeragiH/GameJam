@@ -5,8 +5,6 @@ using UnityEngine;
 public class SingletonBaseWithMono<T> : MonoBehaviour where T : MonoBehaviour
 {
     private static T _instance;
-
-    protected bool isDestroyEnable = false;
     public static T Instance
     {
         get
@@ -34,10 +32,7 @@ public class SingletonBaseWithMono<T> : MonoBehaviour where T : MonoBehaviour
         else
         {
             _instance = this as T;
-            if (!isDestroyEnable)
-            {
-                DontDestroyOnLoad(gameObject);
-            }
+            DontDestroyOnLoad(gameObject);
         }
     }
 }

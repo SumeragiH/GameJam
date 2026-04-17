@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UserInputSystem : SingletonBaseWithMono<UserInputSystem>
+public class UserInputSystem : MonoBehaviour
 {
     public bool isInputEnabled = true; // 是否启用输入
 
@@ -39,8 +39,10 @@ public class UserInputSystem : SingletonBaseWithMono<UserInputSystem>
 
     private void CheckJump(bool isJump)
     {
-        if (isJump) 
+        if (Input.GetKeyDown(KeyCode.W))
+        {
             EventCenter.Instance.EventTrigger("跳跃");
+        }
     }
 
     private void CheckShift(bool isShift)
