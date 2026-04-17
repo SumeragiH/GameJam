@@ -120,6 +120,24 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
         Debug.Log(jumpCount == 2 ? "二段跳" : "跳跃");
 
     }
+    /// <summary>
+    /// 一个重置方法，用于在玩家死亡或重新开始时重置玩家的位置和状态等信息
+    /// </summary>
+    /// <param name="checkPointData"></param>
+    public void Reset(CheckPointData checkPointData)
+    {
+        isGrounded = true;
+        isRunning = false;
+        isIdle = true;
+        isJumping = false;
+        isFalling = false;
+        isDoubleJumping = false;
+        isMovementEnabled = true;
+        isJumpEnabled = true;
+        jumpCount = 0; // 重置跳跃计数器
+
+        this.transform.position = checkPointData.playerPosition; // 重置玩家位置
+    }
 
 
     private void OnCollisionEnter2D(Collision2D collision)
