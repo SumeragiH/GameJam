@@ -16,9 +16,6 @@ public abstract class CoverView : MonoBehaviour
     public virtual bool IsReady => _currentCooldown <= 0f;
     private readonly HashSet<int> _insidePlayerColliderIds = new HashSet<int>();
 
-    public static event Action<CoverView> PlayerEnteredCover;
-    public static event Action<CoverView> PlayerExitedCover;
-
     virtual protected void Start()
     {
     }
@@ -39,18 +36,18 @@ public abstract class CoverView : MonoBehaviour
         }
 
         _insidePlayerColliderIds.Clear();
-        PlayerExitedCover?.Invoke(this);
+        EventCenter.Instance.EventTrigger<CoverView>("玩家离开遮罩", this);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        TryRaiseEnter(other);
-    }
+    // private void OnTriggerEnter2D(Collider2D other)
+    // {
+    //     TryRaiseEnter(other);
+    // }
 
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        TryRaiseExit(other);
-    }
+    // private void OnTriggerExit2D(Collider2D other)
+    // {
+    //     TryRaiseExit(other);
+    // }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -72,7 +69,7 @@ public abstract class CoverView : MonoBehaviour
         int colliderId = other.GetInstanceID();
         if (_insidePlayerColliderIds.Add(colliderId) && _insidePlayerColliderIds.Count == 1)
         {
-            PlayerEnteredCover?.Invoke(this);
+            EventCenter.Instance.EventTrigger<CoverView>("玩家进入遮罩", this);
         }
     }
 
@@ -86,7 +83,7 @@ public abstract class CoverView : MonoBehaviour
         int colliderId = other.GetInstanceID();
         if (_insidePlayerColliderIds.Remove(colliderId) && _insidePlayerColliderIds.Count == 0)
         {
-            PlayerExitedCover?.Invoke(this);
+            EventCenter.Instance.EventTrigger<CoverView>("玩家离开遮罩", this);
         }
     }
 

@@ -33,7 +33,7 @@ public class SingletonBaseWithMono<T> : MonoBehaviour where T : MonoBehaviour
         }
         else
         {
-            _instance = this as T;
+            _instance = this as T; 
             if (!isDestroyEnable)
             {
                 DontDestroyOnLoad(gameObject);

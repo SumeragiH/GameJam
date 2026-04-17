@@ -8,8 +8,12 @@ using UnityEngine;
 public class CoverSystem : SingletonBaseWithMono<CoverSystem>
 {
     [SerializeField] private Transform _playerTransform;
-    [SerializeField] private List<SafeZoneCover> safezoneCoverViews = new List<SafeZoneCover>();
-    [SerializeField] private CoverView currentSceneCoverView;
+    [SerializeField] private List<SafeZoneView> safezoneCoverViews = new List<SafeZoneView>();
+    [SerializeField] private List<CoverView> sceneCoverViews = new List<CoverView>();
+    /// <summary>
+    /// 代表当前激活的场景的CoverView的index，-1代表没有指定
+    /// </summary>
+    private int currentSceneCoverViewIndex = -1;
 
     private readonly HashSet<CoverView> allCovers = new HashSet<CoverView>();
     private readonly HashSet<CoverView> activeCovers = new HashSet<CoverView>();
@@ -22,19 +26,35 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
 
     private void OnEnable()
     {
-        CoverView.PlayerEnteredCover += OnPlayerEnteredCover;
-        CoverView.PlayerExitedCover += OnPlayerExitedCover;
+        EventCenter.Instance.AddListener<CoverView>("玩家进入遮罩", OnPlayerEnteredCover);
+        EventCenter.Instance.AddListener<CoverView>("玩家离开遮罩", OnPlayerExitedCover);
     }
 
     private void OnDisable()
     {
-        CoverView.PlayerEnteredCover -= OnPlayerEnteredCover;
-        CoverView.PlayerExitedCover -= OnPlayerExitedCover;
+        EventCenter.Instance.RemoveListener<CoverView>("玩家进入遮罩", OnPlayerEnteredCover);
+        EventCenter.Instance.RemoveListener<CoverView>("玩家离开遮罩", OnPlayerExitedCover);
     }
 
     void Start()
     {
-        ResolvePlayerTransform();
+        if (_playerTransform == null)
+        {
+            Debug.LogError("CoverSystem: Player Transform is not assigned.");
+        }
+        RebuildCoverCache();
+        RefreshCoverState();
+    }
+
+    internal void SetCurrentSceneCoverViewIndex(int index)
+    {
+        if (index < -1 || index >= sceneCoverViews.Count)
+        {
+            Debug.LogError($"CoverSystem: Invalid scene cover view index {index}. It should be between -1 and {sceneCoverViews.Count - 1}.");
+            return;
+        }
+
+        currentSceneCoverViewIndex = index;
         RebuildCoverCache();
         RefreshCoverState();
     }
@@ -43,7 +63,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
     {
         safezoneCoverViews.Clear();
 
-        HashSet<SafeZoneCover> uniqueCovers = new HashSet<SafeZoneCover>();
+        HashSet<SafeZoneView> uniqueCovers = new HashSet<SafeZoneView>();
         for (int i = 0; i < safeZoneViews.Count; i++)
         {
             SafeZoneView safeZoneView = safeZoneViews[i];
@@ -55,7 +75,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
             SafeZoneCover cover = safeZoneView.CoverView;
             if (cover != null)
             {
-                uniqueCovers.Add(cover);
+                uniqueCovers.Add(safeZoneView);
             }
         }
 
@@ -77,44 +97,24 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
     {
         allCovers.Clear();
 
-        if (safezoneCoverViews.Count == 0)
+        if (sceneCoverViews.Count == 0)
         {
-            safezoneCoverViews.AddRange(FindObjectsOfType<SafeZoneCover>(true));
+            Debug.LogWarning("CoverSystem: No CoverViews assigned for the current scene.");
         }
 
-        if (currentSceneCoverView == null)
+        if (currentSceneCoverViewIndex >= 0 && currentSceneCoverViewIndex < sceneCoverViews.Count)
         {
-            CoverView[] allCoverViews = FindObjectsOfType<CoverView>(true);
-            for (int i = 0; i < allCoverViews.Length; i++)
-            {
-                CoverView coverView = allCoverViews[i];
-                if (coverView is SafeZoneCover)
-                {
-                    continue;
-                }
-
-                currentSceneCoverView = coverView;
-                break;
-            }
-        }
-
-        if (currentSceneCoverView != null)
-        {
-            allCovers.Add(currentSceneCoverView);
+            allCovers.Add(sceneCoverViews[currentSceneCoverViewIndex]);
         }
 
         for (int i = safezoneCoverViews.Count - 1; i >= 0; i--)
         {
-            SafeZoneCover safeZoneCover = safezoneCoverViews[i];
-            if (safeZoneCover == null)
+            SafeZoneCover safeZoneCover = safezoneCoverViews[i].CoverView;
+            if (safeZoneCover != null && safezoneCoverViews[i].isActive)
             {
-                safezoneCoverViews.RemoveAt(i);
-                continue;
+                allCovers.Add(safeZoneCover);
             }
-
-            allCovers.Add(safeZoneCover);
         }
-
     }
 
     private void RefreshCoverState()
@@ -126,21 +126,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
 
         if (previousSafeState != IsPlayerInCover)
         {
-            SafeZoneStateChanged?.Invoke(IsPlayerInCover);
-        }
-    }
-
-    private void ResolvePlayerTransform()
-    {
-        if (_playerTransform != null)
-        {
-            return;
-        }
-
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-        {
-            _playerTransform = player.transform;
+            EventCenter.Instance.EventTrigger<bool>("安全区状态改变", IsPlayerInCover);
         }
     }
 

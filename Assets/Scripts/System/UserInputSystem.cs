@@ -39,13 +39,10 @@ public class UserInputSystem : SingletonBaseWithMono<UserInputSystem>
 
     private void CheckJump(bool isJump)
     {
-        if (isJump) 
+        if (isJump)
+        {
             EventCenter.Instance.EventTrigger("跳跃");
-    }
-
-    private void CheckShift(bool isShift)
-    {
-        //切换
+        }
     }
 
 }

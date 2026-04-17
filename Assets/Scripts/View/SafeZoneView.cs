@@ -8,6 +8,7 @@ public class SafeZoneView : MonoBehaviour
 {
     [SerializeField] private SafeZoneCover _coverView;
     public SafeZoneCover CoverView => _coverView;
+    public bool isActive { get; private set; } = true;
 
     private void OnValidate()
     {
