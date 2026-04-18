@@ -151,8 +151,10 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
+            Debug.Log("触碰到地面");
             isGrounded = true;
             anim.SetBool("isJumping", false);//触碰到地面上的时候取消跳跃动画
+            anim.SetBool("isGround", true);//触碰到地面上的时候设置为在地面上
             jumpCount = 0;
 
             isJumping = false;
@@ -166,6 +168,7 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
         {
             isGrounded = false; // 离开地面，设置为不在地面上
             anim.SetBool("isJumping", true);//在空中的时候播放跳跃动画
+            anim.SetBool("isGround", false);//离开地面，设置为不在地面上
             //Debug.Log("离开地面");
         }
     }

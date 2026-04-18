@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8476750851163817537}
   - component: {fileID: 3320380681396634826}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: character0_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,12 +95,11 @@ GameObject:
   - component: {fileID: 3705169443950140153}
   - component: {fileID: 391549635033564502}
   - component: {fileID: 7215038838005508535}
-  - component: {fileID: 6838513724873883711}
-  - component: {fileID: 5891391967432170713}
   - component: {fileID: 3432212396578519822}
-  m_Layer: 0
-  m_Name: Character
-  m_TagString: Untagged
+  - component: {fileID: 4718122258518152191}
+  m_Layer: 6
+  m_Name: Player
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -114,8 +113,8 @@ Transform:
   m_GameObject: {fileID: 2921371141325248469}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -7.72, y: -1.21, z: 0}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5379113513736550444}
@@ -133,7 +132,7 @@ Animator:
   m_GameObject: {fileID: 2921371141325248469}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 97323d05012cc9143905b8f2734b4f4a, type: 2}
+  m_Controller: {fileID: 9100000, guid: 88f79fb1118a7b9449044ff8eef73544, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -171,33 +170,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &6838513724873883711
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2921371141325248469}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf04a76626fa81740a901e998f88d287, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!111 &5891391967432170713
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2921371141325248469}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 0}
-  m_Animations: []
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!70 &3432212396578519822
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -233,6 +205,27 @@ CapsuleCollider2D:
   m_Offset: {x: -0.2, y: 0.51}
   m_Size: {x: 2.6, y: 4.92}
   m_Direction: 0
+--- !u!114 &4718122258518152191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2921371141325248469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94945fc4ce92b6447ab9c918ff9280da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 5
+  jumpForce: 5
+  doubleJumpforce: 3
+  isGrounded: 1
+  isIdle: 1
+  isJumping: 0
+  isDoubleJumping: 0
+  isMovementEnabled: 1
+  isJumpEnabled: 1
 --- !u!1 &3580305510168185500
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,7 +236,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5379113513736550444}
   - component: {fileID: 9205931843287419250}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: character0_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -330,7 +323,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1637542629455574490}
   - component: {fileID: 5573556630991976569}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: character0_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -414,7 +407,7 @@ GameObject:
   m_Component:
   - component: {fileID: 164071086976171167}
   - component: {fileID: 7088896814228623306}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: character0_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -498,7 +491,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9129739406857585558}
   - component: {fileID: 313349565422174348}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: character0_5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -582,7 +575,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1025988895230776026}
   - component: {fileID: 4797318008190823467}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: character0_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
