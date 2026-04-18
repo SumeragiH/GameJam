@@ -15,6 +15,20 @@ public class ScanRegionProvider : RegionProviderBase
     private Vector3 _targetWorldCenter;
     private Camera _runtimeCamera;
 
+    public float WidthScale
+    {
+        get => _regionWidthScale;
+        set => _regionWidthScale = Mathf.Max(0.05f, value);
+    }
+
+    public float MoveDuration
+    {
+        get => RegionChangeDeltaTime;
+        set => RegionChangeDeltaTime = Mathf.Max(0.01f, value);
+    }
+
+    public bool IsMoving => _hasWorldCenter && Vector3.Distance(_currentWorldCenter, _targetWorldCenter) > 0.0001f;
+
     protected override void OnEnable()
     {
         base.OnEnable();
@@ -75,6 +89,87 @@ public class ScanRegionProvider : RegionProviderBase
         _lastTargetIndex = 0;
         _hasWorldCenter = false;
         regionEnabled = true;
+    }
+
+    public void SetStateIndex(int stateIndex)
+    {
+        TryShiftState(Mathf.Clamp(stateIndex, 0, 3));
+    }
+
+    public bool TryShiftNextState()
+    {
+        if (IsMoving || LitRegionIndex >= 3)
+        {
+            return false;
+        }
+
+        SetStateIndex(LitRegionIndex + 1);
+        return true;
+    }
+
+    public bool TryGetWorldGeometry(out Vector3 centerWorld, out float halfWidthWorld)
+    {
+        Camera camera = ResolveRuntimeCamera();
+        if (camera == null)
+        {
+            centerWorld = default;
+            halfWidthWorld = 0f;
+            return false;
+        }
+
+        InitializeWorldCenterIfNeeded(camera);
+        centerWorld = _currentWorldCenter;
+        halfWidthWorld = CalculateHalfWidthWorld(camera, centerWorld);
+        return halfWidthWorld > 0f;
+    }
+
+    public bool TryGetWorldParallelogram(
+        out Vector3 centerWorld,
+        out Vector3 topLeft,
+        out Vector3 topRight,
+        out Vector3 bottomRight,
+        out Vector3 bottomLeft)
+    {
+        Camera camera = ResolveRuntimeCamera();
+        if (camera == null)
+        {
+            centerWorld = default;
+            topLeft = default;
+            topRight = default;
+            bottomRight = default;
+            bottomLeft = default;
+            return false;
+        }
+
+        InitializeWorldCenterIfNeeded(camera);
+        centerWorld = _currentWorldCenter;
+
+        Vector3 centerViewport3 = camera.WorldToViewportPoint(centerWorld);
+        if (centerViewport3.z <= 0f)
+        {
+            topLeft = default;
+            topRight = default;
+            bottomRight = default;
+            bottomLeft = default;
+            return false;
+        }
+
+        float aspect = GetAspectCorrection(camera);
+        float halfWidth = aspect / 6f * _regionWidthScale;
+        float halfHeight = 0.5f;
+        float skew = Mathf.Tan(_skewAngleDegrees * Mathf.Deg2Rad);
+        Vector2 centerCorrected = ApplyAspectCorrection(new Vector2(centerViewport3.x, centerViewport3.y), aspect);
+
+        Vector2 topLeftCorrected = new Vector2(centerCorrected.x + skew * halfHeight - halfWidth, centerCorrected.y + halfHeight);
+        Vector2 topRightCorrected = new Vector2(centerCorrected.x + skew * halfHeight + halfWidth, centerCorrected.y + halfHeight);
+        Vector2 bottomRightCorrected = new Vector2(centerCorrected.x - skew * halfHeight + halfWidth, centerCorrected.y - halfHeight);
+        Vector2 bottomLeftCorrected = new Vector2(centerCorrected.x - skew * halfHeight - halfWidth, centerCorrected.y - halfHeight);
+
+        topLeft = ViewportToWorld(camera, topLeftCorrected, aspect, centerViewport3.z);
+        topRight = ViewportToWorld(camera, topRightCorrected, aspect, centerViewport3.z);
+        bottomRight = ViewportToWorld(camera, bottomRightCorrected, aspect, centerViewport3.z);
+        bottomLeft = ViewportToWorld(camera, bottomLeftCorrected, aspect, centerViewport3.z);
+        return true;
     }
 
 
@@ -149,6 +244,21 @@ public class ScanRegionProvider : RegionProviderBase
         return camera.ViewportToWorldPoint(new Vector3(viewport.x, viewport.y, depth));
     }
 
+    private float CalculateHalfWidthWorld(Camera camera, Vector3 centerWorld)
+    {
+        Vector3 centerViewport3 = camera.WorldToViewportPoint(centerWorld);
+        if (centerViewport3.z <= 0f)
+        {
+            return 0f;
+        }
+
+        float halfWidthViewport = Mathf.Clamp01(_regionWidthScale / 6f);
+        Vector3 rightWorld = camera.ViewportToWorldPoint(
+            new Vector3(centerViewport3.x + halfWidthViewport, centerViewport3.y, centerViewport3.z)
+        );
+        return Vector3.Distance(centerWorld, rightWorld);
+    }
+
     private static float EvaluateCenterX(float slot, float thirdWidth, float fullWidth, float baseHalfWidth)
     {
         slot = Mathf.Clamp(slot, 0.0f, 3.0f);
@@ -164,5 +274,11 @@ public class ScanRegionProvider : RegionProviderBase
         }
 
         return Mathf.Lerp(thirdWidth * 2.0f, fullWidth + baseHalfWidth, slot - 2.0f);
+    }
+
+    private static Vector3 ViewportToWorld(Camera camera, Vector2 correctedViewport, float aspect, float depth)
+    {
+        Vector2 viewport = RemoveAspectCorrection(correctedViewport, aspect);
+        return camera.ViewportToWorldPoint(new Vector3(viewport.x, viewport.y, depth));
     }
 }
