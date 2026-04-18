@@ -152,8 +152,10 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
 
         if (previousSafeState != IsPlayerInCover)
         {
-            EventCenter.Instance.EventTrigger<bool>("玩家进出安全区", IsPlayerInCover);
-            Debug.Log("玩家在安全区中：" + IsPlayerInCover);
+            if (!IsPlayerInCover)
+            {
+                EventCenter.Instance.EventTrigger("玩家死亡");
+            }
         }
     }
 
@@ -193,6 +195,12 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
             {
                 SafeZoneSystem.Instance.ShiftSafeZoneZoom();
             }
+            else if (selectedCoverType == CoverEnum.Scan) 
+            {
+                // Scan 逻辑: 在Scan状态下仍然能离开安全区
+                // TODO: 更多判断
+                _integralCoverViews[selectedCoverType].ShiftState();
+            }
             else
             {
                 CoverView currecntCoverView = _integralCoverViews[selectedCoverType];
@@ -216,6 +224,14 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
             return;
         }
 
+
+        // 特判：只有在安全区中才能扫描
+        if (sceneCoverTypes[index] == CoverEnum.Scan && !SafeZoneSystem.Instance.IsPlayerInSafeZone())
+        {
+            Debug.LogWarning("无法选择Scan遮罩，因为玩家不在安全区内");
+            return;
+        }
+
         if (selectedCoverType == CoverEnum.SafeZone)
         {
             SafeZoneSystem.Instance.ResetSafeZone();
@@ -235,7 +251,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         selectedCoverType = sceneCoverTypes[index];
         if (selectedCoverType == CoverEnum.SafeZone)
         {
-            // TODO
+            // pass
         }
         else
         {
