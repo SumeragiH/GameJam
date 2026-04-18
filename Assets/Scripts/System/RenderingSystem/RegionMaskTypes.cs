@@ -13,6 +13,7 @@ public struct RegionShaderData
     public Vector2 SizeViewport;
     public float RotationRadians;
     public float FeatherViewport;
+    public float SkewTangent;
 }
 
 public interface IRegionMaskProvider

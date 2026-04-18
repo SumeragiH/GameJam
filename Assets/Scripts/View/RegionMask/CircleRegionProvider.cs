@@ -5,8 +5,6 @@ public class CircleRegionProvider : RegionProviderBase
     [SerializeField] private Transform _center;
     [SerializeField, Min(0f)] private float _radiusWorld = 2f;
 
-    private bool _enabled = true;
-
     protected override bool TryBuildRegionData(Camera camera, out RegionShaderData data)
     {
         Transform centerTransform = _center != null ? _center : transform;
@@ -45,7 +43,8 @@ public class CircleRegionProvider : RegionProviderBase
             CenterViewport = centerViewport,
             SizeViewport = new Vector2(radiusViewport, radiusViewport),
             RotationRadians = 0f,
-            FeatherViewport = FeatherViewport
+            FeatherViewport = FeatherViewport,
+            SkewTangent = 0f
         };
         return true;
     }

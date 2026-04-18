@@ -38,13 +38,14 @@ Shader "Hidden/GameJam/DarkenOutsideRegions"
                 return 1.0 - saturate(smoothstep(0.0, feather, edgeDistance));
             }
 
-            float RegionBoxWeight(float2 uv, float2 center, float2 halfSize, float cosR, float sinR, float feather)
+            float RegionBoxWeight(float2 uv, float2 center, float2 halfSize, float cosR, float sinR, float feather, float skewTangent)
             {
                 float2 delta = uv - center;
                 float2 local = float2(
                     cosR * delta.x + sinR * delta.y,
                     -sinR * delta.x + cosR * delta.y
                 );
+                local.x -= skewTangent * local.y;
                 float2 d = abs(local) - halfSize;
                 float outside = max(d.x, d.y);
 
@@ -79,10 +80,11 @@ Shader "Hidden/GameJam/DarkenOutsideRegions"
                     float cosR = _RegionParamsB[i].x;
                     float sinR = _RegionParamsB[i].y;
                     float feather = _RegionParamsB[i].z;
+                    float skewTangent = _RegionParamsB[i].w;
 
                     float weight = shapeType < 0.5
                         ? RegionCircleWeight(correctedUv, center, size.x, feather)
-                        : RegionBoxWeight(correctedUv, center, size, cosR, sinR, feather);
+                        : RegionBoxWeight(correctedUv, center, size, cosR, sinR, feather, skewTangent);
 
                     insideWeight = max(insideWeight, weight);
                 }

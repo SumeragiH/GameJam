@@ -1,12 +1,13 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public abstract class RegionProviderBase : MonoBehaviour, IRegionMaskProvider
 {
-    [SerializeField] private bool _providerEnabled = true;
+    [SerializeField, FormerlySerializedAs("_providerEnabled")] public bool regionEnabled = true;
     [SerializeField, Range(0, 31)] private int _regionGroup = 0;
     [SerializeField, Min(0f)] private float _featherViewport = 0f;
 
-    public bool IsProviderEnabled => _providerEnabled && isActiveAndEnabled;
+    public bool IsProviderEnabled => regionEnabled && isActiveAndEnabled;
     public int RegionGroup => Mathf.Clamp(_regionGroup, 0, 31);
     protected float FeatherViewport => Mathf.Max(0f, _featherViewport);
 
@@ -18,6 +19,22 @@ public abstract class RegionProviderBase : MonoBehaviour, IRegionMaskProvider
     protected virtual void OnDisable()
     {
         RegionMaskManager.UnregisterProvider(this);
+    }
+
+    /// <summary>
+    /// 使用shift操控遮罩为下一个类型的函数，返回是否有下一个类型（成功转换为下一个类型）
+    /// </summary>
+    /// <returns></returns>
+    protected virtual void TryShiftNext()
+    {
+    }
+
+    /// <summary>
+    /// 重制region shader
+    /// </summary>
+    /// <returns></returns>
+    protected virtual void ResetRegion()
+    {
     }
 
     public bool TryGetRegionData(Camera camera, out RegionShaderData data)

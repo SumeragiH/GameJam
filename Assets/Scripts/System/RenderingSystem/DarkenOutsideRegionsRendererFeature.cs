@@ -6,7 +6,7 @@ public class DarkenOutsideRegionsRendererFeature : ScriptableRendererFeature
 {
     [SerializeField] private Shader _shader;
     [SerializeField, Range(1, RegionMaskManager.MaxShaderRegions)] private int _maxRegions = RegionMaskManager.MaxShaderRegions;
-    [SerializeField] private RenderPassEvent _renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
+    [SerializeField] private RenderPassEvent _renderPassEvent = RenderPassEvent.BeforeRenderingTransparents;
 
     private Material _material;
     private DarkenOutsideRegionsPass _pass;
