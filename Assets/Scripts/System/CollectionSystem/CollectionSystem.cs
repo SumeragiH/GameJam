@@ -11,11 +11,7 @@ public class CollectionSystem : SingletonBaseWithMono<CollectionSystem>
     public List<ScanPointView> stageCacheScanPoints;//当前关卡的临时收集点数，玩家在当前关卡中获得的收集点数，在玩家死亡后会刷新并且丢失
     public int permanentCollectionPoints = 0;//永久收集点数，玩家在游戏过程中获得的总收集点数，即使在玩家死亡后也不会丢失
 
-    /// <summary>
-    /// 一个重置方法，用于在玩家死亡或重新开始时重置收集系统的数据
-    /// </summary>
-    /// <param name="checkPointData"></param>
-    public void Reset(CheckPointData checkPointData)
+    public void ResetCollection(CheckPointData checkPointData)
     {
         stageScanPoint = checkPointData.scanPoint;
         GamePanel.Instance.UpdateCollectionNum(permanentCollectionPoints);

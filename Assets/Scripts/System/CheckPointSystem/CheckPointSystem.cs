@@ -19,8 +19,8 @@ public class CheckPointSystem : SingletonBaseWithMono<CheckPointSystem>
         if (CheckPoints.ContainsKey(currentStageIndex))
         {
             CheckPointData checkPointData = CheckPoints[currentStageIndex];
-            PlayerView.Instance.Reset(checkPointData);
-            CollectionSystem.Instance.Reset(checkPointData);
+            PlayerView.Instance.ResetPlayer(checkPointData);
+            CollectionSystem.Instance.ResetCollection(checkPointData);
         }
         else
         {
