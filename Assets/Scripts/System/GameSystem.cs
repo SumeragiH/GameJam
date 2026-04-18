@@ -2,6 +2,6 @@ class GameSystem : SingletonBaseWithMono<GameSystem>
 {
     void Start()
     {
-        SafeZoneSystem.Instance.SetActiveSafeZone(0);
+        SafeZoneSystem.Instance.InitActiveSafeZone();
     }
 }

@@ -147,19 +147,14 @@ public abstract class CoverView : MonoBehaviour
             return true;
         }
 
-        if (other is Collider2D collider2D && collider2D.attachedRigidbody != null && collider2D.attachedRigidbody.CompareTag(_playerTag))
-        {
-            return true;
-        }
-
-        if (other is Collider collider3D && collider3D.attachedRigidbody != null && collider3D.attachedRigidbody.CompareTag(_playerTag))
+        // 只检测CapsuleCollider2D，TODO：更精准控制
+        if (other is CapsuleCollider2D collider2D && collider2D.attachedRigidbody != null && collider2D.attachedRigidbody.CompareTag(_playerTag))
         {
             return true;
         }
 
         return other.transform.root != null && other.transform.root.CompareTag(_playerTag);
     }
-
     public abstract void ShiftState();
     public abstract void ResetCover();
 }

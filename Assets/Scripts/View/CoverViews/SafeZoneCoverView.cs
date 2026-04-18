@@ -11,6 +11,9 @@ public class SafeZoneCoverView : CoverView
     private CircleRegionProvider _circleRegionProvider;
     private CircleCollider2D _circleCollider;
     private float _baseColliderRadius;
+    public int safeZoneIndex = -1;
+    // 安全区检测物体
+    [SerializeField] private SafeZoneView linkedSafeZone;
 
     protected override void Start()
     {
@@ -64,5 +67,23 @@ public class SafeZoneCoverView : CoverView
     {
         isZoomed = false;
         ApplyZoomState();
+    }
+
+    protected override void OnCoverEnabled()
+    {
+        base.OnCoverEnabled();
+        if (linkedSafeZone != null)
+        {
+            linkedSafeZone.safeZoneEnable = true;
+        }
+    }
+
+    protected override void OnCoverDisable()
+    {
+        base.OnCoverDisable();
+        if (linkedSafeZone != null)
+        {
+            linkedSafeZone.safeZoneEnable = false;
+        }
     }
 }

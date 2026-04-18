@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ScanCoverView : CoverView
@@ -14,6 +15,8 @@ public class ScanCoverView : CoverView
     [SerializeField, Min(0.05f)] private float _widthScale = 1.0f;
 
     private readonly Vector2[] _polygonPoints = new Vector2[4];
+    private readonly List<Collider2D> _scanOverlapResults = new List<Collider2D>();
+    private ContactFilter2D _scanOverlapFilter;
 
     protected override void Start()
     {
@@ -28,6 +31,8 @@ public class ScanCoverView : CoverView
             _scanCollider = GetComponent<PolygonCollider2D>();
         }
 
+        _scanOverlapFilter = default;
+        _scanOverlapFilter.NoFilter();
         ApplyControlToProvider();
     }
 
@@ -62,6 +67,8 @@ public class ScanCoverView : CoverView
             _polygonPoints[3] = transform.InverseTransformPoint(bottomLeftWorld);
             _scanCollider.SetPath(0, _polygonPoints);
         }
+
+        TryActivateSafeZoneWhileScanning();
     }
 
     private void OnValidate()
@@ -111,5 +118,31 @@ public class ScanCoverView : CoverView
         _currentState = 0;
         ApplyControlToProvider();
         CoverEnabled = true;
+    }
+
+    private void TryActivateSafeZoneWhileScanning()
+    {
+        if (_scanRegionProvider == null || _scanCollider == null || !_scanRegionProvider.IsMoving)
+        {
+            return;
+        }
+
+        _scanOverlapResults.Clear();
+        int overlapCount = _scanCollider.OverlapCollider(_scanOverlapFilter, _scanOverlapResults);
+        for (int i = 0; i < overlapCount && i < _scanOverlapResults.Count; i++)
+        {
+            Collider2D hitCollider = _scanOverlapResults[i];
+            if (hitCollider == null)
+            {
+                continue;
+            }
+
+            SafeZoneCoverView safeZoneView = hitCollider.GetComponent<SafeZoneCoverView>();
+            if (safeZoneView == null)
+            {
+                continue;
+            }
+            SafeZoneSystem.Instance.TryActivateNextSafeZoneByScan(safeZoneView.safeZoneIndex);
+        }
     }
 }
