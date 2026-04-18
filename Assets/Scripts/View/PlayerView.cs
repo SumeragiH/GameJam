@@ -11,10 +11,8 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
 
     [Header("玩家状态")]
     public bool isGrounded = true; // 是否在地面上
-    public bool isRunning = false; // 是否正在跑动
     public bool isIdle = true;//是否处于待机动画
     public bool isJumping = false;//是否处于跳跃动画
-    public bool isFalling = false;//是否处于下落动画
     public bool isDoubleJumping = false;//是否处于二段跳动画
 
     [Header("玩家限制")]
@@ -30,8 +28,8 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
     {
         if (rigidbody2D == null)
             rigidbody2D = GetComponent<Rigidbody2D>();
-        //if (anim == null)
-        //    anim = GetComponent<Animator>();
+        if (anim == null)
+            anim = GetComponent<Animator>();
 
         isDestroyEnable = true; // 设置为true，允许销毁实例
 
@@ -45,13 +43,13 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
     {
         if (isGrounded == true)
         {
-            // 取消跳跃动画
-            //anim.SetBool("isJumping", false);
+            //取消跳跃动画
+            anim.SetBool("isJumping", false);
         }
         else
         {
-            // （在空中时）播放跳跃动画
-            //anim.SetBool("isJumping", true);
+             //（在空中时）播放跳跃动画
+            anim.SetBool("isJumping", true);
         }
     }
 
@@ -59,6 +57,7 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
     public void SetPlayerView(CheckPointData checkPointData)
     {
         this.transform.position = checkPointData.playerPosition; // 设置玩家位置
+
     }
 
     private void OnHorizontalMove(float horizontal)
@@ -84,7 +83,7 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
 
             // 处理水平移动逻辑
 
-            //anim.SetInteger("xSpeed", Mathf.Abs(Mathf.RoundToInt(horizontal))); // 设置动画参数，根据水平输入调整动画状态
+            anim.SetInteger("xSpeed", Mathf.Abs(Mathf.RoundToInt(horizontal))); // 设置动画参数，根据水平输入调整动画状态
 
         }
     }
@@ -119,14 +118,13 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
         float currentJumpForce = (jumpCount==2)?doubleJumpforce:jumpForce; // 跳跃力度，根据跳跃次数选择普通跳跃或二段跳的力度
 
         rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, 0f);// 重置竖直速度，确保每次跳跃都能获得相同的跳跃力度
-        rigidbody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        rigidbody2D.AddForce(Vector2.up * currentJumpForce, ForceMode2D.Impulse);
 
         //更新动画状态
         isJumping = (jumpCount == 1);
         isDoubleJumping = (jumpCount == 2);
-        isFalling = false;
 
-        //anim.SetTrigger("isJump"); // 播放起跳动画
+        anim.SetTrigger("isJump"); // 播放起跳动画
 
         Debug.Log(jumpCount == 2 ? "二段跳" : "跳跃");
 
@@ -135,18 +133,16 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
     /// 一个重置方法，用于在玩家死亡或重新开始时重置玩家的位置和状态等信息
     /// </summary>
     /// <param name="checkPointData"></param>
-    public void Reset(CheckPointData checkPointData)
+    public void ResetPlayer(CheckPointData checkPointData)
     {
         isGrounded = true;
-        isRunning = false;
         isIdle = true;
         isJumping = false;
-        isFalling = false;
         isDoubleJumping = false;
         isMovementEnabled = true;
         isJumpEnabled = true;
         jumpCount = 0; // 重置跳跃计数器
-
+        Debug.Log("重置玩家状态");
         this.transform.position = checkPointData.playerPosition; // 重置玩家位置
     }
 
@@ -156,12 +152,11 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
-            //anim.SetBool("isJumping", false);//触碰到地面上的时候取消跳跃动画
+            anim.SetBool("isJumping", false);//触碰到地面上的时候取消跳跃动画
             jumpCount = 0;
 
             isJumping = false;
             isDoubleJumping = false;
-            isFalling = false;
         }
     }
     
@@ -170,7 +165,7 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = false; // 离开地面，设置为不在地面上
-            //anim.SetBool("isJumping", true);//在空中的时候播放跳跃动画
+            anim.SetBool("isJumping", true);//在空中的时候播放跳跃动画
             //Debug.Log("离开地面");
         }
     }
