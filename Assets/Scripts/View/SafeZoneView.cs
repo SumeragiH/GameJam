@@ -14,7 +14,6 @@ public class SafeZoneView : MonoBehaviour
 
     private readonly HashSet<int> _insidePlayerActorIds = new HashSet<int>();
     private Vector3 _desiredWorldScale;
-
     private void Awake()
     {
         _desiredWorldScale = transform.lossyScale;

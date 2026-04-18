@@ -129,4 +129,45 @@ public class SafeZoneSystem : SingletonBaseWithMono<SafeZoneSystem>
         isPlayerInSafeZone = false;
     }
 
+    public void TryActivateNextSafeZoneByScan(int scannedSafeZoneIndex)
+    {
+        int nextIndex = presentSafeZoneIndex + 1;
+        if (scannedSafeZoneIndex != nextIndex || nextIndex < 0 || nextIndex >= safeZoneViews.Count)
+        {
+            return;
+        }
+
+        if (presentSafeZoneIndex < 0 || presentSafeZoneIndex >= safeZoneViews.Count)
+        {
+            return;
+        }
+
+
+        SafeZoneCoverView currentSafeZone = safeZoneViews[presentSafeZoneIndex];
+        SafeZoneCoverView nextSafeZone = safeZoneViews[nextIndex];
+        SafeZoneCoverView previousSafeZone = presentSafeZoneIndex - 1 >= 0 && presentSafeZoneIndex - 1 < safeZoneViews.Count ? safeZoneViews[presentSafeZoneIndex - 1] : null;
+
+        if (previousSafeZone != null && !previousSafeZone.CoverEnabled)
+        {
+            return;
+        }
+
+        if (currentSafeZone == null || nextSafeZone == null)
+        {
+            return;
+        }
+
+        if (nextSafeZone.CoverEnabled || !currentSafeZone.CoverEnabled)
+        {
+            return;
+        }
+
+        nextSafeZone.CoverEnabled = true;
+        if (previousSafeZone != null)
+        {
+            previousSafeZone.CoverEnabled = false;
+        }
+        EventCenter.Instance.EventTrigger("同步安全区遮罩", safeZoneViews);
+    }
+
 }
