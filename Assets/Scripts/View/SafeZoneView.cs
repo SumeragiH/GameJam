@@ -1,11 +1,32 @@
 using UnityEngine;
-using System.Collections;
 
 /// <summary>
 /// 默认圆形Sprite, 半径可以自己设置
 /// 自带一个CoverView
 /// </summary>
-class SafeZoneView : MonoBehaviour
+public class SafeZoneView : MonoBehaviour
 {
-    [SerializeField] private CoverView _coverView;
+    [SerializeField] private SafeZoneCover _coverView;
+    [SerializeField] private CircleRegionProvider regionProvider;
+    public SafeZoneCover CoverView => _coverView;
+    private bool _isActive = true;
+
+    public bool IsActive
+    {
+        get => _isActive;
+        set
+        {
+            if (_isActive == value) return;
+            _isActive = value;
+            regionProvider.enabled = IsActive;
+        }
+    }
+
+    private void OnValidate()
+    {
+        if (_coverView == null)
+        {
+            _coverView = GetComponentInChildren<SafeZoneCover>(true);
+        }
+    }
 }
