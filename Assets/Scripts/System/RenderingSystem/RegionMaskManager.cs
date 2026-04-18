@@ -135,7 +135,12 @@ public class RegionMaskManager : MonoBehaviour
 
             RegionTypeData[count] = new Vector4((float)data.ShapeType, 0f, 0f, 0f);
             RegionParamsA[count] = new Vector4(data.CenterViewport.x, data.CenterViewport.y, data.SizeViewport.x, data.SizeViewport.y);
-            RegionParamsB[count] = new Vector4(Mathf.Cos(data.RotationRadians), Mathf.Sin(data.RotationRadians), Mathf.Max(0f, data.FeatherViewport), 0f);
+            RegionParamsB[count] = new Vector4(
+                Mathf.Cos(data.RotationRadians),
+                Mathf.Sin(data.RotationRadians),
+                Mathf.Max(0f, data.FeatherViewport),
+                data.SkewTangent
+            );
             count++;
         }
 

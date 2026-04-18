@@ -1,12 +1,13 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public abstract class RegionProviderBase : MonoBehaviour, IRegionMaskProvider
 {
-    [SerializeField] private bool _providerEnabled = true;
+    [SerializeField, FormerlySerializedAs("_providerEnabled")] private bool _enabled = true;
     [SerializeField, Range(0, 31)] private int _regionGroup = 0;
     [SerializeField, Min(0f)] private float _featherViewport = 0f;
 
-    public bool IsProviderEnabled => _providerEnabled && isActiveAndEnabled;
+    public bool IsProviderEnabled => _enabled && isActiveAndEnabled;
     public int RegionGroup => Mathf.Clamp(_regionGroup, 0, 31);
     protected float FeatherViewport => Mathf.Max(0f, _featherViewport);
 

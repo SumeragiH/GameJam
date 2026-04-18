@@ -3,6 +3,7 @@ using UnityEngine;
 public class ThirdsRegionProvider : RegionProviderBase
 {
     [Range(0, 2)] public int LitRegionIndex = 1;
+    [SerializeField, Range(-80f, 80f)] private float _skewAngleDegrees;
 
     protected override bool TryBuildRegionData(Camera camera, out RegionShaderData data)
     {
@@ -21,7 +22,8 @@ public class ThirdsRegionProvider : RegionProviderBase
             CenterViewport = center,
             SizeViewport = halfSize,
             RotationRadians = 0f,
-            FeatherViewport = FeatherViewport
+            FeatherViewport = FeatherViewport,
+            SkewTangent = Mathf.Tan(_skewAngleDegrees * Mathf.Deg2Rad)
         };
         return true;
     }
