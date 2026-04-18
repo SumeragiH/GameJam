@@ -30,8 +30,8 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
     {
         if (rigidbody2D == null)
             rigidbody2D = GetComponent<Rigidbody2D>();
-        if (anim == null)
-            anim = GetComponent<Animator>();
+        //if (anim == null)
+        //    anim = GetComponent<Animator>();
 
         isDestroyEnable = true; // 设置为true，允许销毁实例
 
@@ -46,12 +46,12 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
         if (isGrounded == true)
         {
             // 取消跳跃动画
-            anim.SetBool("isJumping", false);
+            //anim.SetBool("isJumping", false);
         }
         else
         {
             // （在空中时）播放跳跃动画
-            anim.SetBool("isJumping", true);
+            //anim.SetBool("isJumping", true);
         }
     }
 
@@ -72,19 +72,19 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
             if (horizontal > 0)
             {
                 this.transform.rotation =Quaternion.AngleAxis(0,Vector3.up); // 向右移动，保持默认朝向
-                Debug.Log("向右移动");
+                this.transform.Translate(Vector3.right * horizontal * moveSpeed * Time.deltaTime, Space.Self); // 示例水平移动逻辑
+                //Debug.Log("向右移动"+horizontal);
             }
             else if (horizontal < 0)
             {
                 this.transform.rotation = Quaternion.AngleAxis(180, Vector3.up); // 向左移动，翻转精灵
-               Debug.Log("向左移动");
+                this.transform.Translate(Vector3.right * -horizontal * moveSpeed * Time.deltaTime, Space.Self); // 示例水平移动逻辑
+                //Debug.Log("向左移动"+horizontal);
             }
 
             // 处理水平移动逻辑
 
-            this.transform.Translate(Vector3.right * horizontal * moveSpeed * Time.deltaTime); // 示例水平移动逻辑
-
-            anim.SetInteger("xSpeed", Mathf.Abs(Mathf.RoundToInt(horizontal))); // 设置动画参数，根据水平输入调整动画状态
+            //anim.SetInteger("xSpeed", Mathf.Abs(Mathf.RoundToInt(horizontal))); // 设置动画参数，根据水平输入调整动画状态
 
         }
     }
@@ -126,7 +126,7 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
         isDoubleJumping = (jumpCount == 2);
         isFalling = false;
 
-        anim.SetTrigger("isJump"); // 播放起跳动画
+        //anim.SetTrigger("isJump"); // 播放起跳动画
 
         Debug.Log(jumpCount == 2 ? "二段跳" : "跳跃");
 
@@ -156,7 +156,7 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
-            anim.SetBool("isJumping", false);//触碰到地面上的时候取消跳跃动画
+            //anim.SetBool("isJumping", false);//触碰到地面上的时候取消跳跃动画
             jumpCount = 0;
 
             isJumping = false;
@@ -170,7 +170,7 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = false; // 离开地面，设置为不在地面上
-            anim.SetBool("isJumping", true);//在空中的时候播放跳跃动画
+            //anim.SetBool("isJumping", true);//在空中的时候播放跳跃动画
             //Debug.Log("离开地面");
         }
     }
