@@ -9,20 +9,26 @@ using UnityEngine;
 public class CoverSystem : SingletonBaseWithMono<CoverSystem>
 {
     [SerializeField] private Transform _playerTransform;
-    [SerializeField] private List<SafeZoneView> safezoneCoverViews = new List<SafeZoneView>();
+    [SerializeField] private List<SafeZoneCoverView> safezoneCoverViews = new List<SafeZoneCoverView>();
     [SerializeField] private List<CoverView> sceneCoverViews = new List<CoverView>();
     /// <summary>
     /// 代表当前激活的场景的CoverView的index，-1代表没有指定
     /// </summary>
     private int currentSceneCoverViewIndex = -1;
 
+    /// <summary>
+    /// 所有活跃的遮罩
+    /// </summary>
     private readonly HashSet<CoverView> allCovers = new HashSet<CoverView>();
+    /// <summary>
+    /// 玩家在的遮罩
+    /// </summary>
     private readonly HashSet<CoverView> activeCovers = new HashSet<CoverView>();
     public event Action<bool> SafeZoneStateChanged;
     /// <summary>
     /// 当前玩家是否在遮罩之中（cover之中）
     /// </summary>
-    public bool IsPlayerInCover { get; private set; }
+    public bool IsPlayerInCover { get; private set; } = false;
     public IReadOnlyCollection<CoverView> ActiveCovers => activeCovers;
 
     private void OnEnable()
@@ -30,7 +36,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         EventCenter.Instance.AddListener<CoverView>("玩家进入遮罩", OnPlayerEnteredCover);
         EventCenter.Instance.AddListener<CoverView>("玩家离开遮罩", OnPlayerExitedCover);
         EventCenter.Instance.AddListener<int>("设定遮罩序号", SetCurrentSceneCoverViewIndex);
-        EventCenter.Instance.AddListener<List<SafeZoneView>>("同步安全区遮罩", SyncSafeZoneCovers);
+        EventCenter.Instance.AddListener<List<SafeZoneCoverView>>("同步安全区遮罩", SyncSafeZoneCovers);
     }
 
     private void OnDisable()
@@ -38,7 +44,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         EventCenter.Instance.RemoveListener<CoverView>("玩家进入遮罩", OnPlayerEnteredCover);
         EventCenter.Instance.RemoveListener<CoverView>("玩家离开遮罩", OnPlayerExitedCover);
         EventCenter.Instance.RemoveListener<int>("设定遮罩序号", SetCurrentSceneCoverViewIndex);
-        EventCenter.Instance.RemoveListener<List<SafeZoneView>>("同步安全区遮罩", SyncSafeZoneCovers);
+        EventCenter.Instance.RemoveListener<List<SafeZoneCoverView>>("同步安全区遮罩", SyncSafeZoneCovers);
     }
 
     void Start()
@@ -64,27 +70,23 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         RefreshCoverState();
     }
 
-    internal void SyncSafeZoneCovers(List<SafeZoneView> safeZoneViews)
+    internal void SyncSafeZoneCovers(List<SafeZoneCoverView> safeZoneViews)
     {
         safezoneCoverViews.Clear();
 
-        HashSet<SafeZoneView> uniqueCovers = new HashSet<SafeZoneView>();
+        HashSet<SafeZoneCoverView> uniqueCovers = new HashSet<SafeZoneCoverView>();
         for (int i = 0; i < safeZoneViews.Count; i++)
         {
-            SafeZoneView safeZoneView = safeZoneViews[i];
+            SafeZoneCoverView safeZoneView = safeZoneViews[i];
             if (safeZoneView == null)
             {
                 continue;
             }
 
-            SafeZoneCover cover = safeZoneView.CoverView;
-            if (cover != null)
-            {
-                uniqueCovers.Add(safeZoneView);
-            }
+            uniqueCovers.Add(safeZoneView);
         }
-
         safezoneCoverViews.AddRange(uniqueCovers);
+        Debug.Log("safezoneCoverViews: " + safezoneCoverViews.Count);
         RebuildCoverCache();
         RefreshCoverState();
     }
@@ -106,32 +108,33 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         {
             Debug.LogWarning("CoverSystem: No CoverViews assigned for the current scene.");
         }
-
-        if (currentSceneCoverViewIndex >= 0 && currentSceneCoverViewIndex < sceneCoverViews.Count)
+        else if (currentSceneCoverViewIndex >= 0 && currentSceneCoverViewIndex < sceneCoverViews.Count)
         {
             allCovers.Add(sceneCoverViews[currentSceneCoverViewIndex]);
         }
 
         for (int i = safezoneCoverViews.Count - 1; i >= 0; i--)
         {
-            SafeZoneCover safeZoneCover = safezoneCoverViews[i].CoverView;
-            if (safeZoneCover != null && safezoneCoverViews[i].IsActive)
+            SafeZoneCoverView safeZoneCoverView = safezoneCoverViews[i];
+            if (safeZoneCoverView != null && safeZoneCoverView.CoverEnabled)
             {
-                allCovers.Add(safeZoneCover);
+                allCovers.Add(safeZoneCoverView);
             }
         }
     }
 
     private void RefreshCoverState()
     {
-        activeCovers.RemoveWhere(cover => cover == null || !allCovers.Contains(cover));
+        activeCovers.RemoveWhere(cover => cover == null || !allCovers.Contains(cover) || !cover.CoverEnabled);
 
         bool previousSafeState = IsPlayerInCover;
         IsPlayerInCover = activeCovers.Count > 0;
+        Debug.Log("activeCovers: " + activeCovers.Count);
 
         if (previousSafeState != IsPlayerInCover)
         {
-            EventCenter.Instance.EventTrigger<bool>("安全区状态改变", IsPlayerInCover);
+            EventCenter.Instance.EventTrigger<bool>("玩家进出安全区", IsPlayerInCover);
+            Debug.Log("玩家在安全区中：" + IsPlayerInCover);
         }
     }
 

@@ -8,70 +8,83 @@ using System.Collections.Generic;
 /// </summary>
 public abstract class CoverView : MonoBehaviour
 {
-    [SerializeField] protected float _cooldownTime = 5f;
     [SerializeField] private string _playerTag = "Player";
+    [SerializeField] private RegionProviderBase regionProvider;
+    [SerializeField] private bool coverEnabled = true;
+    [SerializeField] private bool shiftable = false;
 
-    public float CooldownTime => _cooldownTime;
-    protected float _currentCooldown = 0f;
-    public virtual bool IsReady => _currentCooldown <= 0f;
+    public bool CoverEnabled
+    {
+        get => coverEnabled;
+        set
+        {
+            if (coverEnabled == value) return;
+            coverEnabled = value;
+            if (coverEnabled)
+            {
+                OnCoverEnabled();
+            }
+            else
+            {
+                OnCoverDisable();
+            }
+        }
+    }
+
     private readonly HashSet<int> _insidePlayerColliderIds = new HashSet<int>();
+    private readonly List<Collider2D> _selfColliders2D = new List<Collider2D>();
+    private readonly List<Collider2D> _overlapResults2D = new List<Collider2D>();
 
     virtual protected void Start()
     {
     }
 
-    private void FixedUpdate()
+    protected virtual void OnCoverEnabled()
     {
-        if (_currentCooldown <= _cooldownTime)
+        if (regionProvider != null)
         {
-            _currentCooldown += Time.fixedDeltaTime;
+            regionProvider.regionEnabled = true;
         }
+
+        SyncCurrentPlayerOverlaps2D();
     }
 
-    private void OnDisable()
+    protected virtual void OnCoverDisable()
     {
-        if (_insidePlayerColliderIds.Count <= 0)
+        if (_insidePlayerColliderIds.Count > 0)
         {
-            return;
+            _insidePlayerColliderIds.Clear();
+            EventCenter.Instance.EventTrigger<CoverView>("玩家离开遮罩", this);
         }
 
-        _insidePlayerColliderIds.Clear();
-        EventCenter.Instance.EventTrigger<CoverView>("玩家离开遮罩", this);
+        if (regionProvider != null)
+        {
+            regionProvider.regionEnabled = false;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        TryRaiseEnter(other);
+        if (coverEnabled)
+            TryRaiseEnter(other);
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        TryRaiseExit(other);
+        if (coverEnabled)
+            TryRaiseExit(other);
     }
-
-    // private void OnTriggerEnter(Collider other)
-    // {
-    //     TryRaiseEnter(other);
-    // }
-
-    // private void OnTriggerExit(Collider other)
-    // {
-    //     TryRaiseExit(other);
-    // }
 
     private void TryRaiseEnter(Component other)
     {
-        Debug.Log("TryRaiseEnter");
         if (!IsPlayerCollider(other))
         {
             return;
         }
 
         int colliderId = other.GetInstanceID();
-        Debug.Log("check collider id");
         if (_insidePlayerColliderIds.Add(colliderId) && _insidePlayerColliderIds.Count == 1)
         {
-            Debug.Log("message emit");
             EventCenter.Instance.EventTrigger<CoverView>("玩家进入遮罩", this);
         }
     }
@@ -87,6 +100,38 @@ public abstract class CoverView : MonoBehaviour
         if (_insidePlayerColliderIds.Remove(colliderId) && _insidePlayerColliderIds.Count == 0)
         {
             EventCenter.Instance.EventTrigger<CoverView>("玩家离开遮罩", this);
+        }
+    }
+
+    /// <summary>
+    /// ai coding: 检测与玩家碰撞箱重叠
+    /// </summary>
+    private void SyncCurrentPlayerOverlaps2D()
+    {
+        GetComponents(_selfColliders2D);
+        ContactFilter2D filter = default;
+        filter.NoFilter();
+
+        for (int i = 0; i < _selfColliders2D.Count; i++)
+        {
+            Collider2D selfCollider = _selfColliders2D[i];
+            if (selfCollider == null || !selfCollider.enabled)
+            {
+                continue;
+            }
+
+            _overlapResults2D.Clear();
+            int overlapCount = selfCollider.OverlapCollider(filter, _overlapResults2D);
+            for (int j = 0; j < overlapCount && j < _overlapResults2D.Count; j++)
+            {
+                Collider2D other = _overlapResults2D[j];
+                if (other == null || other == selfCollider)
+                {
+                    continue;
+                }
+
+                TryRaiseEnter(other);
+            }
         }
     }
 
@@ -115,5 +160,5 @@ public abstract class CoverView : MonoBehaviour
         return other.transform.root != null && other.transform.root.CompareTag(_playerTag);
     }
 
-    public abstract void ActivateCover();
+    public abstract void ShiftState();
 }
