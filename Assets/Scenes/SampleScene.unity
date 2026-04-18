@@ -304,9 +304,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerTransform: {fileID: 255798547}
-  safezoneCoverViews: []
-  sceneCoverViews:
-  - {fileID: 735911376}
+  integralCoverViews:
+  - coverEnum: 2
+    coverView: {fileID: 735911376}
+  sceneCoverTypes: 0100000002000000
 --- !u!4 &255798547 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5206786452691234064, guid: 14bc7ab574085b346aa94f8f5df84780, type: 3}

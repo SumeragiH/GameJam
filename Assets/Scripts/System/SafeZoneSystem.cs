@@ -16,7 +16,7 @@ public class SafeZoneSystem : SingletonBaseWithMono<SafeZoneSystem>
     /// 暂时用于设置显示的安全区，step表示当前在第几个存档点，从0计数
     /// </summary>
     /// <param name="step"></param>
-    public void setActiveSafeZone(int step)
+    public void SetActiveSafeZone(int step)
     {
         for (int i = 0; i < safeZoneViews.Count; i++)
         {
@@ -32,11 +32,19 @@ public class SafeZoneSystem : SingletonBaseWithMono<SafeZoneSystem>
         EventCenter.Instance.EventTrigger("同步安全区遮罩", safeZoneViews);
     }
 
-    public void shiftActiveSafeZoneZoom()
+    public void ShiftSafeZoneZoom()
     {
         for (int i = 0; i < safeZoneViews.Count; i++)
         {
             safeZoneViews[i].ShiftState();
+        }
+    }
+
+    public void ResetSafeZone()
+    {
+        for (int i = 0; i < safeZoneViews.Count; i++)
+        {
+            safeZoneViews[i].ResetCover();
         }
     }
 }

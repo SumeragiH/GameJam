@@ -32,12 +32,28 @@ public class UserInputSystem : SingletonBaseWithMono<UserInputSystem>
 
     private void CheckShift()
     {
-        // TODO: 优化手感
-        if (Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift))
+        if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Alpha4))
+            if (Input.GetKey(KeyCode.Alpha1) || Input.GetKey(KeyCode.Alpha2) || Input.GetKey(KeyCode.Alpha3) || Input.GetKey(KeyCode.Alpha4))
             {
-                // TODO
+                int coverIndex = -1;
+                if (Input.GetKey(KeyCode.Alpha1))
+                {
+                    coverIndex = 0;
+                }
+                else if (Input.GetKey(KeyCode.Alpha2))
+                {
+                    coverIndex = 1;
+                }
+                else if (Input.GetKey(KeyCode.Alpha3))
+                {
+                    coverIndex = 2;
+                }
+                else if (Input.GetKey(KeyCode.Alpha4))
+                {
+                    coverIndex = 3;
+                }
+                EventCenter.Instance.EventTrigger("选择遮罩序号", coverIndex);
             }
             else
             {

@@ -161,4 +161,5 @@ public abstract class CoverView : MonoBehaviour
     }
 
     public abstract void ShiftState();
+    public abstract void ResetCover();
 }
