@@ -25,8 +25,25 @@ public class UserInputSystem : SingletonBaseWithMono<UserInputSystem>
         {
             CheckInput(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
             CheckJump(Input.GetKeyDown(KeyCode.Space));
+            CheckShift();
         }
 
+    }
+
+    private void CheckShift()
+    {
+        // TODO: 优化手感
+        if (Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift))
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Alpha4))
+            {
+                // TODO
+            }
+            else
+            {
+                EventCenter.Instance.EventTrigger("shift按下");
+            }
+        }
     }
 
     private void CheckInput(float horizontal, float vertical)

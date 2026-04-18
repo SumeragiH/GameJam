@@ -1782,6 +1782,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ScanCover
       objectReference: {fileID: 0}
+    - target: {fileID: 6623843376907426988, guid: a163dfbb4862504468af8663819d944f, type: 3}
+      propertyPath: <shiftable>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9198540360965098007, guid: a163dfbb4862504468af8663819d944f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.92956245

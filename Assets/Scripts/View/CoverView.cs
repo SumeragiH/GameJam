@@ -11,7 +11,7 @@ public abstract class CoverView : MonoBehaviour
     [SerializeField] private string _playerTag = "Player";
     [SerializeField] private RegionProviderBase regionProvider;
     [SerializeField] private bool coverEnabled = true;
-    [SerializeField] private bool shiftable = false;
+    [field: SerializeField] public bool shiftable {get; private set;} = false;
 
     public bool CoverEnabled
     {

@@ -31,4 +31,12 @@ public class SafeZoneSystem : SingletonBaseWithMono<SafeZoneSystem>
         }
         EventCenter.Instance.EventTrigger("同步安全区遮罩", safeZoneViews);
     }
+
+    public void shiftActiveSafeZoneZoom()
+    {
+        for (int i = 0; i < safeZoneViews.Count; i++)
+        {
+            safeZoneViews[i].ShiftState();
+        }
+    }
 }

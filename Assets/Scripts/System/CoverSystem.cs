@@ -14,7 +14,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
     /// <summary>
     /// 代表当前激活的场景的CoverView的index，-1代表没有指定
     /// </summary>
-    private int currentSceneCoverViewIndex = -1;
+    private int currentSceneCoverViewIndex = 0;
 
     /// <summary>
     /// 所有活跃的遮罩
@@ -37,6 +37,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         EventCenter.Instance.AddListener<CoverView>("玩家离开遮罩", OnPlayerExitedCover);
         EventCenter.Instance.AddListener<int>("设定遮罩序号", SetCurrentSceneCoverViewIndex);
         EventCenter.Instance.AddListener<List<SafeZoneCoverView>>("同步安全区遮罩", SyncSafeZoneCovers);
+        EventCenter.Instance.AddListener("shift按下", OnShiftPressed);
     }
 
     private void OnDisable()
@@ -45,6 +46,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         EventCenter.Instance.RemoveListener<CoverView>("玩家离开遮罩", OnPlayerExitedCover);
         EventCenter.Instance.RemoveListener<int>("设定遮罩序号", SetCurrentSceneCoverViewIndex);
         EventCenter.Instance.RemoveListener<List<SafeZoneCoverView>>("同步安全区遮罩", SyncSafeZoneCovers);
+        EventCenter.Instance.RemoveListener("shift按下", OnShiftPressed);
     }
 
     void Start()
@@ -163,6 +165,22 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         {
             RefreshCoverState();
             Debug.Log("玩家离开遮罩");
+        }
+    }
+
+    private void OnShiftPressed()
+    {
+        if (currentSceneCoverViewIndex >= 0 && currentSceneCoverViewIndex <= sceneCoverViews.Count)
+        {
+            CoverView currecntCoverView = sceneCoverViews[currentSceneCoverViewIndex];
+            if (currecntCoverView.shiftable)
+            {
+                currecntCoverView.ShiftState();
+            }
+        }
+        else
+        {
+            Debug.LogWarning("shift按下但是没有对应遮罩, index: " + currentSceneCoverViewIndex);
         }
     }
 }
