@@ -102,6 +102,7 @@ MonoBehaviour:
   _playerTag: Player
   regionProvider: {fileID: 5143777352977138276}
   coverEnabled: 1
+  shiftable: 0
 --- !u!58 &694567695725055188
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -154,3 +155,5 @@ MonoBehaviour:
   _featherViewport: 0
   _center: {fileID: 4343305001912292252}
   _radiusWorld: 1.4
+  _isZoomed: 0
+  _zoomTransitionDuration: 0.05

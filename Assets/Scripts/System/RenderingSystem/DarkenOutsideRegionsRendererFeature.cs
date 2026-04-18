@@ -40,8 +40,13 @@ public class DarkenOutsideRegionsRendererFeature : ScriptableRendererFeature
             return;
         }
 
-        CameraType cameraType = renderingData.cameraData.cameraType;
-        if (cameraType != CameraType.Game && cameraType != CameraType.SceneView)
+        CameraData cameraData = renderingData.cameraData;
+        if (cameraData.cameraType != CameraType.Game)
+        {
+            return;
+        }
+
+        if (cameraData.renderType != CameraRenderType.Base)
         {
             return;
         }
