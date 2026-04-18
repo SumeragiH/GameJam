@@ -9,12 +9,24 @@ using UnityEngine;
 public class CoverSystem : SingletonBaseWithMono<CoverSystem>
 {
     [SerializeField] private Transform _playerTransform;
-    [SerializeField] private List<SafeZoneCoverView> safezoneCoverViews = new List<SafeZoneCoverView>();
-    [SerializeField] private List<CoverView> sceneCoverViews = new List<CoverView>();
+    private List<SafeZoneCoverView> safezoneCoverViews = new List<SafeZoneCoverView>();
+
+    [Serializable]
+    class CoverEnumViewRelation
+    {
+        public CoverEnum coverEnum;
+        public CoverView coverView;
+    }
+    [SerializeField] private List<CoverEnumViewRelation> integralCoverViews = new();
     /// <summary>
-    /// 代表当前激活的场景的CoverView的index，-1代表没有指定
+    /// 除了safezone外所有的整体作用的CoverViews
     /// </summary>
-    private int currentSceneCoverViewIndex = -1;
+    [SerializeField] private Dictionary<CoverEnum, CoverView> _integralCoverViews = new Dictionary<CoverEnum, CoverView>();
+    /// <summary>
+    /// 代表当前激活的场景的可选CoverView
+    /// </summary>
+    [SerializeField] private List<CoverEnum> sceneCoverTypes = new List<CoverEnum>();
+    private CoverEnum selectedCoverType = CoverEnum.None;
 
     /// <summary>
     /// 所有活跃的遮罩
@@ -35,37 +47,44 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
     {
         EventCenter.Instance.AddListener<CoverView>("玩家进入遮罩", OnPlayerEnteredCover);
         EventCenter.Instance.AddListener<CoverView>("玩家离开遮罩", OnPlayerExitedCover);
-        EventCenter.Instance.AddListener<int>("设定遮罩序号", SetCurrentSceneCoverViewIndex);
         EventCenter.Instance.AddListener<List<SafeZoneCoverView>>("同步安全区遮罩", SyncSafeZoneCovers);
+        EventCenter.Instance.AddListener("shift按下", OnShiftPressed);
+        EventCenter.Instance.AddListener<int>("选择遮罩序号", OnSelectedCoverIndexChanged);
     }
 
     private void OnDisable()
     {
         EventCenter.Instance.RemoveListener<CoverView>("玩家进入遮罩", OnPlayerEnteredCover);
         EventCenter.Instance.RemoveListener<CoverView>("玩家离开遮罩", OnPlayerExitedCover);
-        EventCenter.Instance.RemoveListener<int>("设定遮罩序号", SetCurrentSceneCoverViewIndex);
         EventCenter.Instance.RemoveListener<List<SafeZoneCoverView>>("同步安全区遮罩", SyncSafeZoneCovers);
+        EventCenter.Instance.RemoveListener("shift按下", OnShiftPressed);
+        EventCenter.Instance.RemoveListener<int>("选择遮罩序号", OnSelectedCoverIndexChanged);
     }
 
     void Start()
     {
+        // 将integralCoverViews加入_intgralCoverViews中
+        foreach (var relation in integralCoverViews)
+        {
+            if (relation.coverView == null)
+            {
+                Debug.LogWarning($"CoverSystem: CoverView for {relation.coverEnum} is not assigned.");
+                continue;
+            }
+
+            if (_integralCoverViews.ContainsKey(relation.coverEnum))
+            {
+                Debug.LogWarning($"CoverSystem: Duplicate CoverEnum {relation.coverEnum} in integralCoverViews.");
+                continue;
+            }
+
+            _integralCoverViews.Add(relation.coverEnum, relation.coverView);
+        }
+
         if (_playerTransform == null)
         {
             Debug.LogError("CoverSystem: Player Transform is not assigned.");
         }
-        RebuildCoverCache();
-        RefreshCoverState();
-    }
-
-    internal void SetCurrentSceneCoverViewIndex(int index)
-    {
-        if (index < -1 || index >= sceneCoverViews.Count)
-        {
-            Debug.LogError($"CoverSystem: Invalid scene cover view index {index}. It should be between -1 and {sceneCoverViews.Count - 1}.");
-            return;
-        }
-
-        currentSceneCoverViewIndex = index;
         RebuildCoverCache();
         RefreshCoverState();
     }
@@ -104,13 +123,13 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
     {
         allCovers.Clear();
 
-        if (sceneCoverViews.Count == 0)
+        if (_integralCoverViews.Count == 0)
         {
             Debug.LogWarning("CoverSystem: No CoverViews assigned for the current scene.");
         }
-        else if (currentSceneCoverViewIndex >= 0 && currentSceneCoverViewIndex < sceneCoverViews.Count)
+        else if (sceneCoverTypes.Contains(selectedCoverType) && _integralCoverViews.ContainsKey(selectedCoverType))
         {
-            allCovers.Add(sceneCoverViews[currentSceneCoverViewIndex]);
+            allCovers.Add(_integralCoverViews[selectedCoverType]);
         }
 
         for (int i = safezoneCoverViews.Count - 1; i >= 0; i--)
@@ -164,5 +183,73 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
             RefreshCoverState();
             Debug.Log("玩家离开遮罩");
         }
+    }
+
+    private void OnShiftPressed()
+    {
+        if (sceneCoverTypes.Contains(selectedCoverType))
+        {
+            if (selectedCoverType == CoverEnum.SafeZone)
+            {
+                SafeZoneSystem.Instance.ShiftSafeZoneZoom();
+            }
+            else
+            {
+                CoverView currecntCoverView = _integralCoverViews[selectedCoverType];
+                if (currecntCoverView.shiftable)
+                {
+                    currecntCoverView.ShiftState();
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning("shift按下但是没有对应遮罩: " + selectedCoverType);
+        }
+    }
+
+    private void OnSelectedCoverIndexChanged(int index)
+    {
+        if (index <= -1 || index >= sceneCoverTypes.Count)
+        {
+            Debug.LogError($"CoverSystem: Invalid scene cover view index {index}. It should be between 0 and {sceneCoverTypes.Count - 1}.");
+            return;
+        }
+
+        if (selectedCoverType == CoverEnum.SafeZone)
+        {
+            SafeZoneSystem.Instance.ResetSafeZone();
+        }
+        else
+        {
+            if (sceneCoverTypes.Contains(selectedCoverType) && _integralCoverViews.ContainsKey(selectedCoverType))
+            {
+                CoverView currentCoverView = _integralCoverViews[selectedCoverType];
+                if (currentCoverView != null && currentCoverView.shiftable)
+                {
+                    currentCoverView.ResetCover();
+                    currentCoverView.CoverEnabled = false;
+                }
+            }
+        }
+        selectedCoverType = sceneCoverTypes[index];
+        if (selectedCoverType == CoverEnum.SafeZone)
+        {
+            // TODO
+        }
+        else
+        {
+            if (sceneCoverTypes.Contains(selectedCoverType) && _integralCoverViews.ContainsKey(selectedCoverType))
+            {
+                CoverView currentCoverView = _integralCoverViews[selectedCoverType];
+                if (currentCoverView != null && currentCoverView.shiftable)
+                {
+                    currentCoverView.CoverEnabled = true;
+                }
+            }
+        }
+        Debug.Log($"选择遮罩序号: {index}, selectedCoverType: {selectedCoverType}");
+        RebuildCoverCache();
+        RefreshCoverState();
     }
 }

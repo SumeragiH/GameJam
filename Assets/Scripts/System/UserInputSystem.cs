@@ -25,8 +25,41 @@ public class UserInputSystem : SingletonBaseWithMono<UserInputSystem>
         {
             CheckInput(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
             CheckJump(Input.GetKeyDown(KeyCode.Space));
+            CheckShift();
         }
 
+    }
+
+    private void CheckShift()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
+        {
+            if (Input.GetKey(KeyCode.Alpha1) || Input.GetKey(KeyCode.Alpha2) || Input.GetKey(KeyCode.Alpha3) || Input.GetKey(KeyCode.Alpha4))
+            {
+                int coverIndex = -1;
+                if (Input.GetKey(KeyCode.Alpha1))
+                {
+                    coverIndex = 0;
+                }
+                else if (Input.GetKey(KeyCode.Alpha2))
+                {
+                    coverIndex = 1;
+                }
+                else if (Input.GetKey(KeyCode.Alpha3))
+                {
+                    coverIndex = 2;
+                }
+                else if (Input.GetKey(KeyCode.Alpha4))
+                {
+                    coverIndex = 3;
+                }
+                EventCenter.Instance.EventTrigger("选择遮罩序号", coverIndex);
+            }
+            else
+            {
+                EventCenter.Instance.EventTrigger("shift按下");
+            }
+        }
     }
 
     private void CheckInput(float horizontal, float vertical)

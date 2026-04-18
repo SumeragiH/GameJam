@@ -304,9 +304,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerTransform: {fileID: 255798547}
-  safezoneCoverViews: []
-  sceneCoverViews:
-  - {fileID: 735911376}
+  integralCoverViews:
+  - coverEnum: 2
+    coverView: {fileID: 735911376}
+  sceneCoverTypes: 0100000002000000
 --- !u!4 &255798547 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5206786452691234064, guid: 14bc7ab574085b346aa94f8f5df84780, type: 3}
@@ -1414,6 +1415,10 @@ PrefabInstance:
     - target: {fileID: 3857538972526619254, guid: a163dfbb4862504468af8663819d944f, type: 3}
       propertyPath: m_Name
       value: ScanCover
+      objectReference: {fileID: 0}
+    - target: {fileID: 6623843376907426988, guid: a163dfbb4862504468af8663819d944f, type: 3}
+      propertyPath: <shiftable>k__BackingField
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9198540360965098007, guid: a163dfbb4862504468af8663819d944f, type: 3}
       propertyPath: m_LocalPosition.x

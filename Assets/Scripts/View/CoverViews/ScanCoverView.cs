@@ -105,4 +105,11 @@ public class ScanCoverView : CoverView
         _scanRegionProvider.WidthScale = _widthScale;
         _scanRegionProvider.SetStateIndex(_currentState);
     }
+
+    public override void ResetCover()
+    {
+        _currentState = 0;
+        ApplyControlToProvider();
+        CoverEnabled = true;
+    }
 }

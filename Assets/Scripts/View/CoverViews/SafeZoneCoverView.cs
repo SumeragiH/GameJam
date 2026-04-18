@@ -59,4 +59,10 @@ public class SafeZoneCoverView : CoverView
             ApplyZoomState();
         }
     }
+
+    public override void ResetCover()
+    {
+        isZoomed = false;
+        ApplyZoomState();
+    }
 }
