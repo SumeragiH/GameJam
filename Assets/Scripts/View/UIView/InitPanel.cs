@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InitPanel : MonoBehaviour
+public class InitPanel : BasePanel
 {
     public Button btnStart;
     public Button btnEnd;
