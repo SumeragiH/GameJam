@@ -25,7 +25,7 @@ public abstract class RegionProviderBase : MonoBehaviour, IRegionMaskProvider
     /// 使用shift操控遮罩为下一个类型的函数，返回是否有下一个类型（成功转换为下一个类型）
     /// </summary>
     /// <returns></returns>
-    protected virtual void TryShiftNext()
+    protected virtual void TryShiftState(int stateIndex)
     {
     }
 
@@ -67,6 +67,27 @@ public abstract class RegionProviderBase : MonoBehaviour, IRegionMaskProvider
     protected static Vector2 ApplyAspectCorrection(Vector2 viewport, float aspect)
     {
         return new Vector2(viewport.x * aspect, viewport.y);
+    }
+
+    protected static Vector2 RemoveAspectCorrection(Vector2 correctedViewport, float aspect)
+    {
+        if (Mathf.Abs(aspect) <= 0.00001f)
+        {
+            return correctedViewport;
+        }
+
+        return new Vector2(correctedViewport.x / aspect, correctedViewport.y);
+    }
+
+    protected static float GetReferenceDepth(Camera camera, Vector3 worldReference)
+    {
+        if (camera == null)
+        {
+            return 0f;
+        }
+
+        float depth = Vector3.Dot(worldReference - camera.transform.position, camera.transform.forward);
+        return Mathf.Max(depth, camera.nearClipPlane + 0.01f);
     }
 
     protected abstract bool TryBuildRegionData(Camera camera, out RegionShaderData data);

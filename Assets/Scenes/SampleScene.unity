@@ -993,6 +993,8 @@ MonoBehaviour:
   LitRegionIndex: 0
   _skewAngleDegrees: 20
   RegionChangeDeltaTime: 1
+  _regionWidthScale: 1
+  _worldAnchor: {fileID: 0}
 --- !u!4 &735911375
 Transform:
   m_ObjectHideFlags: 0
@@ -1312,6 +1314,10 @@ PrefabInstance:
     - target: {fileID: 694567695725055188, guid: 75a32d6435e805a4cb5431a70dae7631, type: 3}
       propertyPath: m_Radius
       value: 1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2928615215473433327, guid: 75a32d6435e805a4cb5431a70dae7631, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4343305001912292252, guid: 75a32d6435e805a4cb5431a70dae7631, type: 3}
       propertyPath: m_LocalPosition.x
