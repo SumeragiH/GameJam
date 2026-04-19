@@ -108,6 +108,11 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         RefreshCoverState();
     }
 
+    private void Update()
+    {
+        
+    }
+
     internal void SyncSafeZoneCovers(List<SafeZoneCoverView> safeZoneViews)
     {
         safezoneCoverViews.Clear();
