@@ -15,6 +15,7 @@ public class CollectionSystem : SingletonBaseWithMono<CollectionSystem>
     public void ResetCollection(CheckPointData checkPointData)
     {
         stageScanPoint = checkPointData.scanPoint;
+        GamePanel.Instance.energySystem.SetEnergy(stageScanPoint);//重置当前关卡的扫描点数，并更新UI界面上能量点的显示
         GamePanel.Instance.UpdateCollectionNum(permanentCollectionPoints);
         //更新UI界面上能量点的显示、
         //TODO: 可以在这里添加一些其他的重置逻辑，例如重置临时收集点数等
@@ -37,5 +38,16 @@ public class CollectionSystem : SingletonBaseWithMono<CollectionSystem>
         GamePanel.Instance.energySystem.AddEnergy(1);//每收集一个扫描点数，增加1点能量
         stageCacheScanPoints.Add(scanPoint);//将当前关卡的临时收集点数添加到列表中
 
+    }
+
+    public void SlowlyRecoverEnergy()
+    {
+        GamePanel.Instance.energySystem.SlowlyRecover();
+    }
+
+    public void ConsumeEbergy()
+    {
+        GamePanel.Instance.energySystem.ConsumeEnergy(1);
+        stageScanPoint--;
     }
 }
