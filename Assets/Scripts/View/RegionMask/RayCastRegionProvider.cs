@@ -5,18 +5,70 @@ public class RayCastRegionProvider : RegionProviderBase
     [Header("RayCast Region")]
     [Range(0, 2)] [SerializeField] private int _rayIndex = 0;
     [SerializeField, Min(0.05f)] private float _rayRangeViewport = 3f;
-    [SerializeField, Range(0.5f, 89f)] private float _rayHalfAngleDegrees = 16f;
     [SerializeField, Min(0f)] private float _screenEdgeInset = 0f;
 
     [Header("Center Direction (Degrees)")]
     [SerializeField, Range(-180f, 180f)] private float _leftTopCenterAngle = -30f;
     [SerializeField, Range(-180f, 180f)] private float _rightTopCenterAngle = -150f;
-    [SerializeField, Range(-180f, 180f)] private float _topCenterCenterAngle = -45f;
+    [SerializeField, Range(-180f, 180f)] private float _topCenterCenterAngle = -90f;
+
+    [Header("Spread Angle (Degrees)")]
+    [SerializeField, Range(1f, 178f)] private float _leftTopSpreadAngle = 30f;
+    [SerializeField, Range(1f, 178f)] private float _rightTopSpreadAngle = 30f;
+    [SerializeField, Range(1f, 178f)] private float _topCenterSpreadAngle = 45f;
 
     public int RayIndex
     {
         get => _rayIndex;
         set => _rayIndex = Mathf.Clamp(value, 0, 2);
+    }
+
+    public float RayRangeViewport
+    {
+        get => _rayRangeViewport;
+        set => _rayRangeViewport = Mathf.Max(0.05f, value);
+    }
+
+    public float ScreenEdgeInset
+    {
+        get => _screenEdgeInset;
+        set => _screenEdgeInset = Mathf.Max(0f, value);
+    }
+
+    public float LeftTopCenterAngle
+    {
+        get => _leftTopCenterAngle;
+        set => _leftTopCenterAngle = Mathf.Clamp(value, -180f, 180f);
+    }
+
+    public float RightTopCenterAngle
+    {
+        get => _rightTopCenterAngle;
+        set => _rightTopCenterAngle = Mathf.Clamp(value, -180f, 180f);
+    }
+
+    public float TopCenterCenterAngle
+    {
+        get => _topCenterCenterAngle;
+        set => _topCenterCenterAngle = Mathf.Clamp(value, -180f, 180f);
+    }
+
+    public float LeftTopSpreadAngle
+    {
+        get => _leftTopSpreadAngle;
+        set => _leftTopSpreadAngle = Mathf.Clamp(value, 1f, 178f);
+    }
+
+    public float RightTopSpreadAngle
+    {
+        get => _rightTopSpreadAngle;
+        set => _rightTopSpreadAngle = Mathf.Clamp(value, 1f, 178f);
+    }
+
+    public float TopCenterSpreadAngle
+    {
+        get => _topCenterSpreadAngle;
+        set => _topCenterSpreadAngle = Mathf.Clamp(value, 1f, 178f);
     }
 
     protected override void TryShiftState(int stateIndex)
@@ -46,24 +98,50 @@ public class RayCastRegionProvider : RegionProviderBase
         return true;
     }
 
-    protected override bool TryBuildRegionData(Camera camera, out RegionShaderData data)
+    public bool TryGetScreenSpaceSectorData(
+        Camera camera,
+        out Vector2 centerCorrectedViewport,
+        out float rangeCorrectedViewport,
+        out float halfAngleRadians,
+        out float directionAngleRadians)
     {
+        if (camera == null)
+        {
+            centerCorrectedViewport = default;
+            rangeCorrectedViewport = 0f;
+            halfAngleRadians = 0f;
+            directionAngleRadians = 0f;
+            return false;
+        }
+
         float aspect = GetAspectCorrection(camera);
         Vector2 anchorViewport = EvaluateAnchorViewport(_rayIndex, Mathf.Clamp01(_screenEdgeInset));
-        Vector2 center = ApplyAspectCorrection(anchorViewport, aspect);
+        centerCorrectedViewport = ApplyAspectCorrection(anchorViewport, aspect);
+        rangeCorrectedViewport = Mathf.Max(0.05f, _rayRangeViewport);
+        halfAngleRadians = Mathf.Clamp(EvaluateSpreadAngle(_rayIndex) * 0.5f, 0.5f, 89f) * Mathf.Deg2Rad;
+        directionAngleRadians = EvaluateCenterAngle(_rayIndex) * Mathf.Deg2Rad;
+        return true;
+    }
 
-        float centerAngleDeg = EvaluateCenterAngle(_rayIndex);
-        float centerAngleRad = centerAngleDeg * Mathf.Deg2Rad;
+    protected override bool TryBuildRegionData(Camera camera, out RegionShaderData data)
+    {
+        if (!TryGetScreenSpaceSectorData(
+                camera,
+                out Vector2 center,
+                out float range,
+                out float halfAngle,
+                out float directionAngle))
+        {
+            data = default;
+            return false;
+        }
 
         data = new RegionShaderData
         {
             ShapeType = RegionShapeType.Sector,
             CenterViewport = center,
-            SizeViewport = new Vector2(
-                Mathf.Max(0.05f, _rayRangeViewport),
-                Mathf.Clamp(_rayHalfAngleDegrees, 0.5f, 89f) * Mathf.Deg2Rad
-            ),
-            RotationRadians = centerAngleRad,
+            SizeViewport = new Vector2(range, halfAngle),
+            RotationRadians = directionAngle,
             FeatherViewport = FeatherViewport,
             SkewTangent = 0f
         };
@@ -98,11 +176,26 @@ public class RayCastRegionProvider : RegionProviderBase
         }
     }
 
+    private float EvaluateSpreadAngle(int index)
+    {
+        switch (Mathf.Clamp(index, 0, 2))
+        {
+            case 0:
+                return _leftTopSpreadAngle;
+            case 1:
+                return _rightTopSpreadAngle;
+            default:
+                return _topCenterSpreadAngle;
+        }
+    }
+
     private void OnValidate()
     {
         _rayIndex = Mathf.Clamp(_rayIndex, 0, 2);
         _rayRangeViewport = Mathf.Max(0.05f, _rayRangeViewport);
-        _rayHalfAngleDegrees = Mathf.Clamp(_rayHalfAngleDegrees, 0.5f, 89f);
+        _leftTopSpreadAngle = Mathf.Clamp(_leftTopSpreadAngle, 1f, 178f);
+        _rightTopSpreadAngle = Mathf.Clamp(_rightTopSpreadAngle, 1f, 178f);
+        _topCenterSpreadAngle = Mathf.Clamp(_topCenterSpreadAngle, 1f, 178f);
         _screenEdgeInset = Mathf.Max(0f, _screenEdgeInset);
     }
 }
