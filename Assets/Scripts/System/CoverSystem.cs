@@ -82,6 +82,24 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
             _integralCoverViews.Add(relation.coverEnum, relation.coverView);
         }
 
+        // disable 所有sceneCoverTypes对应的cover(除了SafeZone类型的cover)
+        foreach (var coverType in sceneCoverTypes)
+        {
+            if (coverType == CoverEnum.SafeZone)
+            {
+                continue;
+            }
+
+            if (_integralCoverViews.ContainsKey(coverType))
+            {
+                _integralCoverViews[coverType].CoverEnabled = false;
+            }
+            else
+            {
+                Debug.LogWarning($"CoverSystem: sceneCoverTypes contains {coverType} but it's not defined in integralCoverViews.");
+            }
+        }
+
         if (_playerTransform == null)
         {
             Debug.LogError("CoverSystem: Player Transform is not assigned.");
@@ -226,6 +244,20 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
             return;
         }
 
+        if (selectedCoverType == CoverEnum.Scan)
+        {
+            // 不扫描完成无法切换遮罩
+            ScanCoverView scanCoverView = _integralCoverViews[CoverEnum.Scan] as ScanCoverView;
+            if (scanCoverView != null && !scanCoverView.scanFinished)
+            {
+                return;
+            }
+        }
+
+        if (sceneCoverTypes[index] == CoverEnum.None || sceneCoverTypes[index] == selectedCoverType)
+        {
+            return;
+        }
 
         // 特判：只有在安全区中才能扫描
         if (sceneCoverTypes[index] == CoverEnum.Scan && !SafeZoneSystem.Instance.IsPlayerInSafeZone())
@@ -245,7 +277,6 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
                 CoverView currentCoverView = _integralCoverViews[selectedCoverType];
                 if (currentCoverView != null && currentCoverView.shiftable)
                 {
-                    currentCoverView.ResetCover();
                     currentCoverView.CoverEnabled = false;
                 }
             }
@@ -262,6 +293,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
                 CoverView currentCoverView = _integralCoverViews[selectedCoverType];
                 if (currentCoverView != null && currentCoverView.shiftable)
                 {
+                    currentCoverView.ResetCover();
                     currentCoverView.CoverEnabled = true;
                 }
             }
@@ -316,6 +348,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
                 }
             }
 
+            selectedCoverType = CoverEnum.None;
             RebuildCoverCache();
             RefreshCoverState();
         }
@@ -323,5 +356,12 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         {
             _suppressDeathEvent = previousSuppressState;
         }
+    }
+
+    public void ResetSelectedCover()
+    {
+        selectedCoverType = CoverEnum.None;
+        RebuildCoverCache();
+        RefreshCoverState();
     }
 }

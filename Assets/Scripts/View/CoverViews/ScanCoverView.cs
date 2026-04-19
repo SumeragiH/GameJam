@@ -17,6 +17,10 @@ public class ScanCoverView : CoverView
     private readonly Vector2[] _polygonPoints = new Vector2[4];
     private readonly List<Collider2D> _scanOverlapResults = new List<Collider2D>();
     private ContactFilter2D _scanOverlapFilter;
+    /// <summary>
+    /// 表示这次扫描是否完成
+    /// </summary>
+    public bool scanFinished = false;
 
     protected override void Start()
     {
@@ -33,6 +37,7 @@ public class ScanCoverView : CoverView
 
         _scanOverlapFilter = default;
         _scanOverlapFilter.NoFilter();
+        scanFinished = false;
         ApplyControlToProvider();
     }
 
@@ -88,17 +93,18 @@ public class ScanCoverView : CoverView
 
         if (!_scanRegionProvider.TryShiftNextState())
         {
+            _currentState = _scanRegionProvider.LitRegionIndex;
+            if (_currentState >= 3 && !_scanRegionProvider.IsMoving) 
+            {
+                ResetCover();
+                CoverSystem.Instance.ResetSelectedCover();
+                CoverEnabled = false;
+                scanFinished = true;
+            }
             return;
         }
+        _currentState = _scanRegionProvider.LitRegionIndex;
 
-        if (_currentState == 3)
-        {
-            CoverEnabled = false;
-        }
-        else
-        {
-            _currentState = Mathf.Clamp(_currentState + 1, 0, 3);
-        }
     }
 
     private void ApplyControlToProvider()
@@ -118,6 +124,7 @@ public class ScanCoverView : CoverView
         _currentState = 0;
         ApplyControlToProvider();
         CoverEnabled = true;
+        scanFinished = false;
     }
 
     private void TryActivateSafeZoneWhileScanning()
