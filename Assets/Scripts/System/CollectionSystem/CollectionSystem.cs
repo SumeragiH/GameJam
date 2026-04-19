@@ -45,7 +45,7 @@ public class CollectionSystem : SingletonBaseWithMono<CollectionSystem>
         GamePanel.Instance.energySystem.SlowlyRecover();
     }
 
-    public void ConsumeEbergy()
+    public void ConsumeEnergy()
     {
         GamePanel.Instance.energySystem.ConsumeEnergy(1);
         stageScanPoint--;
