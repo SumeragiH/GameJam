@@ -287,6 +287,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
             }
         }
         selectedCoverType = sceneCoverTypes[index];
+        RebuildCoverCache();
         if (selectedCoverType == CoverEnum.SafeZone)
         {
             // pass
@@ -304,7 +305,6 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
             }
         }
         Debug.Log($"选择遮罩序号: {index}, selectedCoverType: {selectedCoverType}");
-        RebuildCoverCache();
         RefreshCoverState();
     }
 
