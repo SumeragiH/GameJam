@@ -61,6 +61,7 @@ public class EnergySystem : MonoBehaviour
         }
     }
 
+    // !deprecated
     public void SlowlyRecover()
     {
         if(currentEnergy>=1)
