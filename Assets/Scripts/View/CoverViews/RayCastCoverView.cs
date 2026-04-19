@@ -20,7 +20,7 @@ public class RayCastCoverView : CoverView
     [Header("Spread Angle (Degrees)")]
     [SerializeField, Range(1f, 178f)] private float _leftTopSpreadAngle = 30f;
     [SerializeField, Range(1f, 178f)] private float _rightTopSpreadAngle = 30f;
-    [SerializeField, Range(1f, 178f)] private float _topCenterSpreadAngle = 45f;
+    [SerializeField, Range(1f, 178f)] private float _topCenterSpreadAngle = 65f;
 
     [Header("Collider Sync")]
     [SerializeField, Range(3, 64)] private int _arcSegments = 24;
