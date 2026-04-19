@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 1522009494013631135}
   - component: {fileID: 3081690242870974866}
   m_Layer: 8
-  m_Name: CheckPoint0
+  m_Name: CheckPoint
   m_TagString: CheckPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -336,6 +336,7 @@ MonoBehaviour:
   <shiftable>k__BackingField: 0
   safeZoneIndex: -1
   linkedSafeZone: {fileID: 2143635328180396299}
+  linkedCheckPoint: {fileID: 3081690242870974866}
 --- !u!58 &694567695725055188
 CircleCollider2D:
   m_ObjectHideFlags: 0

@@ -1,6 +1,9 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 public class PlayerView : SingletonBaseWithMono<PlayerView>
 {
@@ -88,19 +91,44 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
         }
     }
 
-    private void OnVerticalMove(float vertical)
+    //private void OnVerticalMove(float vertical)
+    //{
+    //    if (!isMovementEnabled)
+    //    {
+    //        return; // 如果移动被禁用，直接返回
+    //    }
+    //    else
+    //    {
+    //        // 处理垂直移动逻辑
+    //        //TODO
+    //    }
+    //}
+
+
+    public void AutoMove(float time,Vector2 targetPos)
     {
-        if (!isMovementEnabled)
-        {
-            return; // 如果移动被禁用，直接返回
-        }
-        else
-        {
-            // 处理垂直移动逻辑
-            //TODO
-        }
+        transform.DOMove(targetPos, time)
+            .OnStart(() =>
+            {
+                isMovementEnabled = false;
+                isJumpEnabled = false;
+                anim.speed = 1; // 设置动画播放速度
+                anim.SetInteger("xSpeed", 1);
+            })
+            .OnComplete(() => {
+                isMovementEnabled = true;
+                isJumpEnabled = true;
+                anim.speed = 1; // 设置动画播放速度
+                anim.SetInteger("xSpeed", 0);
+            }); 
     }
 
+    //重力反转方法
+    public void Revert()
+    {
+        rigidbody2D.gravityScale = -rigidbody2D.gravityScale; // 反转重力，使玩家能够反向移动
+        this.transform.rotation = Quaternion.AngleAxis(180, Vector3.right); //反转玩家的朝向，使其看起来像是翻转了
+    }
 
     private void OnJump()
     {
