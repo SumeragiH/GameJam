@@ -105,6 +105,15 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
     //    }
     //}
 
+    public void ApplySpringBounce(float velocity)
+    {
+        // 常见做法：清掉当前竖直速度，避免叠加不稳定
+        Vector2 v = rigidbody2D.velocity;   // 如果你Unity版本API不支持，可改成 _rb.velocity
+        v.y = 0f;
+        rigidbody2D.velocity = v;           // 或 _rb.velocity = v
+
+        rigidbody2D.AddForce(Vector2.up * velocity, ForceMode2D.Impulse);
+    }
 
     public void AutoMove(float time,Vector2 targetPos)
     {
@@ -173,7 +182,6 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
         jumpCount = 0; // 重置跳跃计数器
         Debug.Log("重置玩家状态");
         this.transform.position = checkPointData.playerPosition; // 重置玩家位置
-        //重置玩家速度
         rigidbody2D.velocity = Vector2.zero; // 重置玩家速度
     }
 
