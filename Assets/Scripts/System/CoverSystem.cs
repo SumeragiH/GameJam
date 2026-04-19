@@ -36,6 +36,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
     /// 玩家在的遮罩
     /// </summary>
     private readonly HashSet<CoverView> activeCovers = new HashSet<CoverView>();
+    private bool _suppressDeathEvent = false;
     public event Action<bool> SafeZoneStateChanged;
     /// <summary>
     /// 当前玩家是否在遮罩之中（cover之中）
@@ -144,6 +145,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
 
     private void RefreshCoverState()
     {
+        Debug.Log("Refreshing cover state...");
         activeCovers.RemoveWhere(cover => cover == null || !allCovers.Contains(cover) || !cover.CoverEnabled);
 
         bool previousSafeState = IsPlayerInCover;
@@ -152,7 +154,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
 
         if (previousSafeState != IsPlayerInCover)
         {
-            if (!IsPlayerInCover)
+            if (!IsPlayerInCover && !_suppressDeathEvent)
             {
                 EventCenter.Instance.EventTrigger("玩家死亡");
             }
@@ -271,39 +273,55 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
 
     public void ResetCover(CheckPointData checkPointData)
     {
-        // 重置所有integral cover
-        foreach (var coverView in _integralCoverViews.Values)
+        bool previousSuppressState = _suppressDeathEvent;
+        _suppressDeathEvent = true;
+
+        try
         {
-            if (coverView != null && coverView.shiftable)
+            // 重置所有integral cover
+            foreach (var coverView in _integralCoverViews.Values)
             {
-                coverView.ResetCover();
-                coverView.CoverEnabled = false;
+                if (coverView != null && coverView.shiftable)
+                {
+                    coverView.ResetCover();
+                    coverView.CoverEnabled = false;
+                }
             }
-        }
 
-        // 重置所有safezone cover
-        foreach (var safeZoneCover in safezoneCoverViews)
+            // 重置所有safezone cover
+            foreach (var safeZoneCover in safezoneCoverViews)
+            {
+                if (safeZoneCover != null)
+                {
+                    safeZoneCover.ResetCover();
+                    safeZoneCover.CoverEnabled = false;
+                }
+            }
+
+            // 激活检查点对应的遮罩
+            if (checkPointData.safeZoneIndex >= 0 && checkPointData.safeZoneIndex < safezoneCoverViews.Count)
+            {
+                SafeZoneCoverView targetSafeZoneCover = safezoneCoverViews[checkPointData.safeZoneIndex];
+                if (targetSafeZoneCover != null)
+                {
+                    targetSafeZoneCover.CoverEnabled = true;
+                }
+                if (checkPointData.safeZoneIndex > 0)
+                {
+                    SafeZoneCoverView previousSafeZoneCover = safezoneCoverViews[checkPointData.safeZoneIndex - 1];
+                    if (previousSafeZoneCover != null)
+                    {
+                        previousSafeZoneCover.CoverEnabled = true;
+                    }
+                }
+            }
+
+            RebuildCoverCache();
+            RefreshCoverState();
+        }
+        finally
         {
-            if (safeZoneCover != null)
-            {
-                safeZoneCover.ResetCover();
-                safeZoneCover.CoverEnabled = false;
-            }
+            _suppressDeathEvent = previousSuppressState;
         }
-
-        // 激活检查点对应的遮罩
-        if (checkPointData.safeZoneIndex >= 0 && checkPointData.safeZoneIndex < safezoneCoverViews.Count)
-        {
-            SafeZoneCoverView targetSafeZoneCover = safezoneCoverViews[checkPointData.safeZoneIndex];
-            if (targetSafeZoneCover != null)
-            {
-                targetSafeZoneCover.CoverEnabled = true;
-            }
-        }
-
-
-        selectedCoverType = CoverEnum.None;
-        RebuildCoverCache();
-        RefreshCoverState();
     }
 }

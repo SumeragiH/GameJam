@@ -103,10 +103,16 @@ public class DarkenOutsideRegionsRendererFeature : ScriptableRendererFeature
             RegionMaskManager.UploadShaderData(camera, _material, _maxRegions);
 
             CommandBuffer cmd = CommandBufferPool.Get("DarkenOutsideRegionsPass");
-            Blitter.BlitCameraTexture(cmd, cameraColorTarget, _tempTexture);
-            Blitter.BlitCameraTexture(cmd, _tempTexture, cameraColorTarget, _material, 0);
-            context.ExecuteCommandBuffer(cmd);
-            CommandBufferPool.Release(cmd);
+            try
+            {
+                Blitter.BlitCameraTexture(cmd, cameraColorTarget, _tempTexture);
+                Blitter.BlitCameraTexture(cmd, _tempTexture, cameraColorTarget, _material, 0);
+                context.ExecuteCommandBuffer(cmd);
+            }
+            finally
+            {
+                CommandBufferPool.Release(cmd);
+            }
         }
 
         public void Dispose()
