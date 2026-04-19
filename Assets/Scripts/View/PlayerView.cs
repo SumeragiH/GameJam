@@ -11,6 +11,7 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
     [SerializeField] private float moveSpeed = 5f; // 移动速度
     [SerializeField] private float jumpForce = 5f; // 跳跃力度
     [SerializeField] private float doubleJumpforce = 3f; // 二段跳的跳跃力度
+    [SerializeField] public bool invincible = false; // 无敌状态标志
 
     [Header("玩家状态")]
     public bool isGrounded = true; // 是否在地面上

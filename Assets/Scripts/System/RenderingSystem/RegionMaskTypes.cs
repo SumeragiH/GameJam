@@ -3,7 +3,8 @@ using UnityEngine;
 public enum RegionShapeType
 {
     Circle = 0,
-    Box = 1
+    Box = 1,
+    Sector = 2
 }
 
 public struct RegionShaderData
