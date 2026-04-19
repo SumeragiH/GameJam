@@ -2869,7 +2869,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _effectEnabled: 1
-  _outsideBrightness: 0.35
+  _outsideBrightness: 0.015
   _activeGroupMask: 4294967295
 --- !u!4 &4343305003034894103 stripped
 Transform:
