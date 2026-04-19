@@ -158,7 +158,8 @@ public class EventCenter : SingletonBaseWithMono<EventCenter>
     {
         if (eventDic.ContainsKey(name))
         {
-            (eventDic[name] as EventInfo<T>).actions.Invoke(obj);
+            EventInfo<T> eventInfo = eventDic[name] as EventInfo<T>;
+            eventInfo?.actions?.Invoke(obj);
         }
     }
     /// <summary>
@@ -169,7 +170,8 @@ public class EventCenter : SingletonBaseWithMono<EventCenter>
     {
         if (eventDic.ContainsKey(name))
         {
-            (eventDic[name] as EventInfo).actions.Invoke();
+            EventInfo eventInfo = eventDic[name] as EventInfo;
+            eventInfo?.actions?.Invoke();
         }
     }
     /// <summary>
@@ -184,7 +186,8 @@ public class EventCenter : SingletonBaseWithMono<EventCenter>
     {
         if (eventDic.ContainsKey(name))
         {
-            (eventDic[name] as EventInfo<T, K>).actions.Invoke(obj1, obj2);
+            EventInfo<T, K> eventInfo = eventDic[name] as EventInfo<T, K>;
+            eventInfo?.actions?.Invoke(obj1, obj2);
         }
     }
 

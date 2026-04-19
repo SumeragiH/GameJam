@@ -12,6 +12,8 @@ public class CheckPointView : MonoBehaviour
 
     [SerializeField] public SafeZoneCoverView safeZoneCoverView;//检查点关联的安全区遮罩
 
+    public bool hasBeenSaved = false; // 这个记录点历史上是否被存过
+
     public void Start()
     {
         //除了第一次进入场景时，其他时候都需要隐藏检查点，通过扫描来显示
@@ -29,12 +31,14 @@ public class CheckPointView : MonoBehaviour
             CheckPointSystem.Instance.SaveCheckPoint(this);
             //自身消失
             HideCheckPoint();
+            hasBeenSaved = true;
         }
     }
 
     public void ShowCheckPoint()
     {
-        gameObject.SetActive(true);
+        if (!hasBeenSaved)
+            gameObject.SetActive(true);
     }
 
     public void HideCheckPoint()
