@@ -125,7 +125,8 @@ public class SafeZoneSystem : SingletonBaseWithMono<SafeZoneSystem>
     {
         for (int i = 0; i < safeZoneViews.Count; i++)
         {
-            safeZoneViews[i].ShiftState();
+            if (safeZoneViews[i].shiftable)
+                safeZoneViews[i].ShiftState();
         }
     }
 

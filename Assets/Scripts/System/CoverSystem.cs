@@ -227,7 +227,9 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
             {
                 // Scan 逻辑: 在Scan状态下仍然能离开安全区
                 // TODO: 更多判断
-                _integralCoverViews[selectedCoverType].ShiftState();
+                Debug.Log("shift按下: Scan状态下切换扫描状态, shiftable: " + _integralCoverViews[selectedCoverType].shiftable);
+                if (_integralCoverViews[selectedCoverType].shiftable)
+                    _integralCoverViews[selectedCoverType].ShiftState();
             }
             else
             {
