@@ -57,6 +57,26 @@ Shader "Hidden/GameJam/DarkenOutsideRegions"
                 return 1.0 - saturate(smoothstep(0.0, feather, outside));
             }
 
+            float RegionSectorWeight(float2 uv, float2 center, float rangeRadius, float halfAngleRadians, float dirCos, float dirSin, float feather)
+            {
+                float2 delta = uv - center;
+                float dist = length(delta);
+                float rangeOutside = dist - rangeRadius;
+
+                float2 direction = dist > 0.00001 ? (delta / dist) : float2(dirCos, dirSin);
+                float cosHalfAngle = cos(max(halfAngleRadians, 0.00001));
+                float cosToCenterDirection = dot(direction, float2(dirCos, dirSin));
+                float angleOutside = cosHalfAngle - cosToCenterDirection;
+
+                float outside = max(rangeOutside, angleOutside);
+                if (feather <= 0.00001)
+                {
+                    return outside <= 0 ? 1.0 : 0.0;
+                }
+
+                return 1.0 - saturate(smoothstep(0.0, feather, outside));
+            }
+
             half4 Frag(Varyings input) : SV_Target
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
@@ -82,9 +102,19 @@ Shader "Hidden/GameJam/DarkenOutsideRegions"
                     float feather = _RegionParamsB[i].z;
                     float skewTangent = _RegionParamsB[i].w;
 
-                    float weight = shapeType < 0.5
-                        ? RegionCircleWeight(correctedUv, center, size.x, feather)
-                        : RegionBoxWeight(correctedUv, center, size, cosR, sinR, feather, skewTangent);
+                    float weight;
+                    if (shapeType < 0.5)
+                    {
+                        weight = RegionCircleWeight(correctedUv, center, size.x, feather);
+                    }
+                    else if (shapeType < 1.5)
+                    {
+                        weight = RegionBoxWeight(correctedUv, center, size, cosR, sinR, feather, skewTangent);
+                    }
+                    else
+                    {
+                        weight = RegionSectorWeight(correctedUv, center, size.x, size.y, cosR, sinR, feather);
+                    }
 
                     insideWeight = max(insideWeight, weight);
                 }

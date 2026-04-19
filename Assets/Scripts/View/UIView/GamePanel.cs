@@ -23,7 +23,7 @@ public class GamePanel : SingletonBaseWithMono<GamePanel>
 
     private void OnResetButtonClicked()
     {
-        CheckPointSystem.Instance.LoadCheckPoint();
+        CheckPointSystem.Instance.LoadCheckPointWithReset();
     }
     //private void OnRevertButtonClicked()
     //{
