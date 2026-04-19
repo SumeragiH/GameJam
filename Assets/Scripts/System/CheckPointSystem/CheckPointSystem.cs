@@ -8,6 +8,7 @@ public class CheckPointSystem : SingletonBaseWithMono<CheckPointSystem>
     public Dictionary<int,CheckPointData> CheckPoints = new Dictionary<int, CheckPointData>();
     public int currentStageIndex;//当前检查点的名称，可以根据需要进行设置和使用
     private bool _isLoadingCheckPoint = false;
+    private bool playerDieFirstTime = true;
 
     void Start()
     {
@@ -43,6 +44,12 @@ public class CheckPointSystem : SingletonBaseWithMono<CheckPointSystem>
 
                 // 重置遮罩
                 CoverSystem.Instance.ResetCover(checkPointData);
+
+                if (playerDieFirstTime)
+                {
+                    playerDieFirstTime = false;
+                    GameSystem.Instance.ShowTip("小心这片黑暗，它们会吞噬你", 3f);
+                }
             }
             finally
             {

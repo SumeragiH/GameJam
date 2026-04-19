@@ -4,7 +4,8 @@ public enum RegionShapeType
 {
     Circle = 0,
     Box = 1,
-    Sector = 2
+    Sector = 2,
+    Ring = 3
 }
 
 public struct RegionShaderData

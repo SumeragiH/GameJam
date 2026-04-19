@@ -42,7 +42,9 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
     /// 当前玩家是否在遮罩之中（cover之中）
     /// </summary>
     public bool IsPlayerInCover { get; private set; } = false;
+    private bool FirstTimeLackEnergy = true;
     public IReadOnlyCollection<CoverView> ActiveCovers => activeCovers;
+    private bool FirstTimeShiftScan = true;
 
     private void OnEnable()
     {
@@ -219,7 +221,14 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
             if (selectedCoverType == CoverEnum.SafeZone)
             {
                 if (!CollectionSystem.Instance.EnergyConsumable())
+                {
+                    if (FirstTimeLackEnergy)
+                    {
+                        FirstTimeLackEnergy = false;
+                        GameSystem.Instance.ShowTip("注意，你的操作需要消耗能量", 3f);
+                    }
                     return;
+                }
                 SafeZoneSystem.Instance.ShiftSafeZoneZoom();
                 CollectionSystem.Instance.ConsumeEnergy();
             }
@@ -232,7 +241,14 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
             else
             {
                 if (!CollectionSystem.Instance.EnergyConsumable())
+                {
+                    if (FirstTimeLackEnergy)
+                    {
+                        FirstTimeLackEnergy = false;
+                        GameSystem.Instance.ShowTip("注意，你的操作需要消耗能量", 3f);
+                    }
                     return;
+                }
                 CoverView currecntCoverView = _integralCoverViews[selectedCoverType];
                 if (currecntCoverView.shiftable)
                 {
@@ -251,6 +267,11 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
     {
         if (!CollectionSystem.Instance.EnergyConsumable())
         {
+            if (FirstTimeLackEnergy)
+            {
+                FirstTimeLackEnergy = false;
+                GameSystem.Instance.ShowTip("注意，你的操作需要消耗能量", 3f);
+            }
             return;
         }
         if (index <= -1 || index >= sceneCoverTypes.Count)
@@ -319,6 +340,11 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
                         if (scanCoverView != null)
                         {
                             scanCoverView.ShiftState();
+                            if (FirstTimeShiftScan)
+                            {
+                                FirstTimeShiftScan = false;
+                                GameSystem.Instance.ShowTip("继续按Shift以扫描", 3f);
+                            }
                         }
                     }
                 }

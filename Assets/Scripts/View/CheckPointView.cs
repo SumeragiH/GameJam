@@ -14,6 +14,9 @@ public class CheckPointView : MonoBehaviour
 
     public bool hasBeenSaved = false; // 这个记录点历史上是否被存过
 
+    [SerializeField] private bool shouldMoveCamera = false; // 是否需要在这个检查点移动摄像头
+    [SerializeField] private CameraView targetCamera;
+
     public void Start()
     {
         //除了第一次进入场景时，其他时候都需要隐藏检查点，通过扫描来显示
@@ -32,6 +35,10 @@ public class CheckPointView : MonoBehaviour
             //自身消失
             HideCheckPoint();
             hasBeenSaved = true;
+            if (shouldMoveCamera)
+            {
+                targetCamera?.MoveNext();
+            }
         }
     }
 

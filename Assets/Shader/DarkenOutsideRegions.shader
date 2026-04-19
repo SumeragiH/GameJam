@@ -77,6 +77,22 @@ Shader "Hidden/GameJam/DarkenOutsideRegions"
                 return 1.0 - saturate(smoothstep(0.0, feather, outside));
             }
 
+            float RegionRingWeight(float2 uv, float2 center, float innerRadius, float outerRadius, float feather)
+            {
+                float d = distance(uv, center);
+                float inner = min(innerRadius, outerRadius);
+                float outer = max(innerRadius, outerRadius);
+
+                if (feather <= 0.00001)
+                {
+                    return (d >= inner && d <= outer) ? 1.0 : 0.0;
+                }
+
+                float innerFade = saturate(smoothstep(inner - feather, inner + feather, d));
+                float outerFade = 1.0 - saturate(smoothstep(outer - feather, outer + feather, d));
+                return innerFade * outerFade;
+            }
+
             half4 Frag(Varyings input) : SV_Target
             {
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
@@ -111,9 +127,13 @@ Shader "Hidden/GameJam/DarkenOutsideRegions"
                     {
                         weight = RegionBoxWeight(correctedUv, center, size, cosR, sinR, feather, skewTangent);
                     }
-                    else
+                    else if (shapeType < 2.5)
                     {
                         weight = RegionSectorWeight(correctedUv, center, size.x, size.y, cosR, sinR, feather);
+                    }
+                    else
+                    {
+                        weight = RegionRingWeight(correctedUv, center, size.x, size.y, feather);
                     }
 
                     insideWeight = max(insideWeight, weight);
