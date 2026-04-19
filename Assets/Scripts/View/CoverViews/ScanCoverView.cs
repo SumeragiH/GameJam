@@ -38,6 +38,7 @@ public class ScanCoverView : CoverView
         _scanOverlapFilter = default;
         _scanOverlapFilter.NoFilter();
         scanFinished = false;
+        _currentState = Mathf.Clamp(_currentState, 0, 3);
         ApplyControlToProvider();
     }
 
@@ -73,6 +74,12 @@ public class ScanCoverView : CoverView
             _scanCollider.SetPath(0, _polygonPoints);
         }
 
+        if (_currentState >= 3 && !_scanRegionProvider.IsMoving)
+        {
+            CompleteScanAndResetSelection();
+            return;
+        }
+
         TryActivateSafeZoneWhileScanning();
     }
 
@@ -96,10 +103,7 @@ public class ScanCoverView : CoverView
             _currentState = _scanRegionProvider.LitRegionIndex;
             if (_currentState >= 3 && !_scanRegionProvider.IsMoving) 
             {
-                ResetCover();
-                CoverSystem.Instance.ResetSelectedCover();
-                CoverEnabled = false;
-                scanFinished = true;
+                CompleteScanAndResetSelection();
             }
             return;
         }
@@ -123,8 +127,15 @@ public class ScanCoverView : CoverView
     {
         _currentState = 0;
         ApplyControlToProvider();
-        CoverEnabled = true;
         scanFinished = false;
+    }
+
+    private void CompleteScanAndResetSelection()
+    {
+        scanFinished = true;
+        ResetCover();
+        CoverEnabled = false;
+        CoverSystem.Instance.ResetSelectedCover();
     }
 
     private void TryActivateSafeZoneWhileScanning()

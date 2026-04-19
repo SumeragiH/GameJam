@@ -94,6 +94,7 @@ public class ScanRegionProvider : RegionProviderBase
     public void SetStateIndex(int stateIndex)
     {
         TryShiftState(Mathf.Clamp(stateIndex, 0, 3));
+        RefreshTargetImmediatelyIfNeeded();
     }
 
     public bool TryShiftNextState()
@@ -105,6 +106,32 @@ public class ScanRegionProvider : RegionProviderBase
 
         SetStateIndex(LitRegionIndex + 1);
         return true;
+    }
+
+    private void RefreshTargetImmediatelyIfNeeded()
+    {
+        if (!Application.isPlaying)
+        {
+            return;
+        }
+
+        Camera camera = ResolveRuntimeCamera();
+        if (camera == null)
+        {
+            return;
+        }
+
+        InitializeWorldCenterIfNeeded(camera);
+
+        int targetIndex = Mathf.Clamp(LitRegionIndex, 0, 3);
+        if (targetIndex == _lastTargetIndex)
+        {
+            return;
+        }
+
+        _lastTargetIndex = targetIndex;
+        _targetWorldCenter = CalculateWorldTarget(targetIndex, camera);
+        _worldMoveSpeed = Vector3.Distance(_currentWorldCenter, _targetWorldCenter) / Mathf.Max(0.01f, RegionChangeDeltaTime);
     }
 
     public bool TryGetWorldGeometry(out Vector3 centerWorld, out float halfWidthWorld)
