@@ -1,0 +1,213 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4797411262538214536
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8206641852873669443}
+  - component: {fileID: 832470332280914574}
+  - component: {fileID: 2801656146628486551}
+  - component: {fileID: 955977814971007061}
+  m_Layer: 7
+  m_Name: block03
+  m_TagString: Ground
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8206641852873669443
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4797411262538214536}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.85, y: -1.83, z: 0}
+  m_LocalScale: {x: 0.1331967, y: 0.1331967, z: 0.1331967}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &832470332280914574
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4797411262538214536}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300000, guid: dad2f816d25902a4cb8fa761e9282a57, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 33.44, y: 26.647501}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!68 &2801656146628486551
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4797411262538214536}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: -9.304572, y: -3.1689873}
+  - {x: -9.835517, y: -1.9621766}
+  - {x: -8.920554, y: -0.5220552}
+  - {x: -7.945366, y: -0.6203238}
+  - {x: -7.8636413, y: 6.7320395}
+  - {x: -4.528704, y: 9.443578}
+  - {x: -4.405571, y: 4.592065}
+  - {x: -4.447971, y: 1.8057308}
+  - {x: -6.0747437, y: 0.5883119}
+  - {x: -7.7999535, y: -2.850453}
+  - {x: -9.233997, y: -3.2957442}
+  m_AdjacentStartPoint: {x: 0, y: 0}
+  m_AdjacentEndPoint: {x: 0, y: 0}
+  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentEndPoint: 0
+--- !u!68 &955977814971007061
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4797411262538214536}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: 6.1182866, y: -9.559233}
+  - {x: -3.589306, y: -9.563593}
+  - {x: -3.502786, y: 5.2129717}
+  - {x: -2.1821597, y: 6.3887186}
+  - {x: -1.0279131, y: 5.5000105}
+  - {x: -1.9953829, y: 4.0800333}
+  - {x: -2.9800978, y: 3.9924765}
+  - {x: -3.0070312, y: -0.55086386}
+  - {x: -3.0390878, y: -7.230941}
+  - {x: -0.25016236, y: -7.2575984}
+  - {x: -0.28994274, y: -2.6411388}
+  - {x: 0.10770169, y: -1.3452748}
+  - {x: 0.9680372, y: -0.99439883}
+  - {x: 2.085296, y: -1.516969}
+  - {x: 1.7930424, y: -2.931059}
+  - {x: 0.37283072, y: -3.3816562}
+  - {x: 0.4128456, y: -7.3141456}
+  - {x: 3.0152917, y: -7.2915}
+  - {x: 2.9843495, y: 1.770532}
+  - {x: 3.852686, y: 2.7166243}
+  - {x: 5.0626373, y: 2.9215093}
+  - {x: 5.326109, y: 1.5385329}
+  - {x: 4.2661433, y: 0.8902366}
+  - {x: 3.5193093, y: 1.0300946}
+  - {x: 3.5632093, y: -4.3542295}
+  - {x: 3.5500536, y: -7.2876096}
+  - {x: 6.1891475, y: -7.376122}
+  - {x: 6.0826902, y: 5.1191945}
+  - {x: 7.3539605, y: 6.289928}
+  - {x: 8.44591, y: 5.868478}
+  - {x: 8.634974, y: 4.6872168}
+  - {x: 7.520286, y: 3.8856866}
+  - {x: 6.690611, y: 4.105114}
+  - {x: 6.717002, y: 0.2633531}
+  - {x: 6.728382, y: -9.201328}
+  - {x: 6.314289, y: -9.55007}
+  m_AdjacentStartPoint: {x: 0, y: 0}
+  m_AdjacentEndPoint: {x: 0, y: 0}
+  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentEndPoint: 0

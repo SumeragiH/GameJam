@@ -21,6 +21,11 @@ public class CircleRegionProvider : RegionProviderBase
         _zoomedScale = Mathf.Max(1f, zoomedScale);
     }
 
+    public void SetRadius(float radiusWorld)
+    {
+        _radiusWorld = Mathf.Max(0f, radiusWorld);
+    }
+
     protected override void OnEnable()
     {
         base.OnEnable();

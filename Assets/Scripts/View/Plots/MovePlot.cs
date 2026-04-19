@@ -29,7 +29,7 @@ public class MovePlot : MonoBehaviour
         moveTween?.Kill();
 
         moveTween = transform
-            .DOMove(movePoints[currentPointIndex].position, moveDuration)
+            .DOMove(movePoints[currentPointIndex].position, moveDuration).SetEase(Ease.Linear)
             .OnComplete(() =>
             {
                 // 到达后判断是否需要反向

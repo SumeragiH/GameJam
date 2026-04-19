@@ -7,13 +7,16 @@ public class GamePanel : SingletonBaseWithMono<GamePanel>
 {
     public Text txtCollectionNum;
     public Button btnReset;
+    public EnergySystem energySystem;
+    public Button btnEnergyRecover;
     //public Button btnRevert;
-    
+
     public void Start()
     {
         txtCollectionNum.text = CollectionSystem.Instance.permanentCollectionPoints.ToString();
         btnReset.onClick.AddListener(OnResetButtonClicked);
         //btnRevert.onClick.AddListener(OnRevertButtonClicked);
+        btnEnergyRecover.onClick.AddListener(OnEnergyRecoverButtonClicked);
     }
 
     public void UpdateCollectionNum(int num)
@@ -24,6 +27,11 @@ public class GamePanel : SingletonBaseWithMono<GamePanel>
     private void OnResetButtonClicked()
     {
         CheckPointSystem.Instance.LoadCheckPointWithReset();
+    }
+
+    private void OnEnergyRecoverButtonClicked()
+    {
+        energySystem.AddEnergy(1);
     }
     //private void OnRevertButtonClicked()
     //{

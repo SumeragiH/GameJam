@@ -6,7 +6,7 @@ public class SafeZoneCoverView : CoverView
     /// 是否被按shift放大
     /// </summary>
     private bool isZoomed = false;
-    [Range(1, 4)] private float zoomedScale = 2.0f;
+    [SerializeField, Range(1, 4)] private float zoomedScale = 2.0f;
 
     private CircleRegionProvider _circleRegionProvider;
     private CircleCollider2D _circleCollider;
@@ -69,6 +69,7 @@ public class SafeZoneCoverView : CoverView
         if (_circleRegionProvider != null)
         {
             _circleRegionProvider.SetZoomScale(zoomedScale);
+            _circleRegionProvider.SetRadius(_baseColliderRadius);
             _circleRegionProvider.IsZoomed = isZoomed;
         }
     }
