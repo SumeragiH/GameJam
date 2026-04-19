@@ -106,7 +106,6 @@ public class SafeZoneSystem : SingletonBaseWithMono<SafeZoneSystem>
         for (int i = 0; i < safeZoneViews.Count; i++)
         {
             safeZoneViews[i].ShiftState();
-            Debug.Log($"SafeZoneSystem: Shifted zoom state of safe zone {i}");
         }
     }
 
