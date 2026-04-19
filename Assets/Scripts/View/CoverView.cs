@@ -37,6 +37,15 @@ public abstract class CoverView : MonoBehaviour
 
     virtual protected void Start()
     {
+        // 确保运行时region状态与CoverEnabled保持一致，避免场景初始反序列化状态不一致
+        if (coverEnabled)
+        {
+            OnCoverEnabled();
+        }
+        else
+        {
+            OnCoverDisable();
+        }
     }
 
     protected virtual void OnCoverEnabled()

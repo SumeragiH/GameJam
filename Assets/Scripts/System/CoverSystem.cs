@@ -214,14 +214,12 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
 
     private void OnShiftPressed()
     {
-        if (!CollectionSystem.Instance.EnergyConsumable())
-        {
-            return;
-        }
         if (sceneCoverTypes.Contains(selectedCoverType))
         {
             if (selectedCoverType == CoverEnum.SafeZone)
             {
+                if (!CollectionSystem.Instance.EnergyConsumable())
+                    return;
                 SafeZoneSystem.Instance.ShiftSafeZoneZoom();
                 CollectionSystem.Instance.ConsumeEnergy();
             }
@@ -233,6 +231,8 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
             }
             else
             {
+                if (!CollectionSystem.Instance.EnergyConsumable())
+                    return;
                 CoverView currecntCoverView = _integralCoverViews[selectedCoverType];
                 if (currecntCoverView.shiftable)
                 {
@@ -301,7 +301,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         CollectionSystem.Instance.ConsumeEnergy();
         if (selectedCoverType == CoverEnum.SafeZone)
         {
-            // pass
+            SafeZoneSystem.Instance.ShiftSafeZoneZoom();
         }
         else
         {
@@ -312,6 +312,15 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
                 {
                     currentCoverView.ResetCover();
                     currentCoverView.CoverEnabled = true;
+                    if (selectedCoverType == CoverEnum.Scan)
+                    {
+                        // Scan 逻辑: 切换到Scan状态需要重置扫描状态
+                        ScanCoverView scanCoverView = currentCoverView as ScanCoverView;
+                        if (scanCoverView != null)
+                        {
+                            scanCoverView.ShiftState();
+                        }
+                    }
                 }
             }
         }

@@ -158,17 +158,6 @@ Transform:
   - {fileID: 1626720898}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &88856384 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1984427788640727403, guid: c8ee927f1db81ca4d9de106e7be05f1b, type: 3}
-  m_PrefabInstance: {fileID: 1771650138}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &107855218
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,6 +345,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3966d03e38e5ba40a1a763004e30ba1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShiftPressInterval: 1
 --- !u!1 &313218186
 GameObject:
   m_ObjectHideFlags: 0
@@ -888,6 +878,7 @@ MonoBehaviour:
   - {fileID: 1956759405}
   - {fileID: 1768188938}
   - {fileID: 566769747}
+  energyRecoverInterval: 3
 --- !u!1 &724360418
 GameObject:
   m_ObjectHideFlags: 0
@@ -933,6 +924,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stageScanPoint: 0
+  PermanentScanPoint: 0
   stageCacheScanPoints: []
   permanentCollectionPoints: 0
 --- !u!1 &725834735
@@ -1952,7 +1944,7 @@ PrefabInstance:
     - target: {fileID: 364263237400254700, guid: c8ee927f1db81ca4d9de106e7be05f1b, type: 3}
       propertyPath: btnReset
       value: 
-      objectReference: {fileID: 88856384}
+      objectReference: {fileID: 0}
     - target: {fileID: 364263237400254700, guid: c8ee927f1db81ca4d9de106e7be05f1b, type: 3}
       propertyPath: btnRevert
       value: 
@@ -2668,11 +2660,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3705169443950140153, guid: 14f5f14ad4926c142802a051ea67e702, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.72
+      value: -7.25
       objectReference: {fileID: 0}
     - target: {fileID: 3705169443950140153, guid: 14f5f14ad4926c142802a051ea67e702, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.21
+      value: -2.25
       objectReference: {fileID: 0}
     - target: {fileID: 3705169443950140153, guid: 14f5f14ad4926c142802a051ea67e702, type: 3}
       propertyPath: m_LocalPosition.z
