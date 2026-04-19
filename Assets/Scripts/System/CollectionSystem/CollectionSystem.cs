@@ -8,12 +8,14 @@ public class CollectionSystem : SingletonBaseWithMono<CollectionSystem>
 {
     // 这里可以添加一些收集系统相关的属性和方法
     public int stageScanPoint=0;
+    public int PermanentScanPoint = 0;//永久扫描点数，玩家到达存档点之后再更新
     public List<ScanPointView> stageCacheScanPoints;//当前关卡的临时收集点数，玩家在当前关卡中获得的收集点数，在玩家死亡后会刷新并且丢失
     public int permanentCollectionPoints = 0;//永久收集点数，玩家在游戏过程中获得的总收集点数，即使在玩家死亡后也不会丢失
 
     public void ResetCollection(CheckPointData checkPointData)
     {
         stageScanPoint = checkPointData.scanPoint;
+        GamePanel.Instance.energySystem.SetEnergy(stageScanPoint);//重置当前关卡的扫描点数，并更新UI界面上能量点的显示
         GamePanel.Instance.UpdateCollectionNum(permanentCollectionPoints);
         //更新UI界面上能量点的显示、
         //TODO: 可以在这里添加一些其他的重置逻辑，例如重置临时收集点数等
@@ -33,7 +35,19 @@ public class CollectionSystem : SingletonBaseWithMono<CollectionSystem>
     public void CollectScanPoint(ScanPointView scanPoint)
     {
         stageScanPoint++;
+        GamePanel.Instance.energySystem.AddEnergy(1);//每收集一个扫描点数，增加1点能量
         stageCacheScanPoints.Add(scanPoint);//将当前关卡的临时收集点数添加到列表中
 
+    }
+
+    public void SlowlyRecoverEnergy()
+    {
+        GamePanel.Instance.energySystem.SlowlyRecover();
+    }
+
+    public void ConsumeEbergy()
+    {
+        GamePanel.Instance.energySystem.ConsumeEnergy(1);
+        stageScanPoint--;
     }
 }

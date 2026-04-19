@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class EnergySystem : MonoBehaviour
 {
-    public int currentEnergy = 0;// 当前能量值
+    public int currentEnergy; // 当前能量值
     public List<EnergyBar> energyBars; // 能量条列表
 
     private void Start()
     {
+        currentEnergy = CollectionSystem.Instance.stageScanPoint;
         Init();
     }
     public void ConsumeEnergy(int amount)
@@ -43,6 +44,13 @@ public class EnergySystem : MonoBehaviour
         if (currentEnergy < 0) currentEnergy = 0;
         RefreshBars();
     }
+    public void SetEnergy(int amount)
+    {
+        currentEnergy = amount;
+        if (currentEnergy > energyBars.Count) currentEnergy = energyBars.Count;
+        if (currentEnergy < 0) currentEnergy = 0;
+        RefreshBars();
+    }
 
     private void RefreshBars()
     {
@@ -52,13 +60,14 @@ public class EnergySystem : MonoBehaviour
             else energyBars[i].Hide(0.2f);
         }
     }
+
     public void SlowlyRecover()
     {
         if(currentEnergy>=1)
         {
             return;
         }
-        energyBars[0].Show(3f, () => currentEnergy++);
+        energyBars[0].Show(3f, () => { currentEnergy++;CollectionSystem.Instance.stageScanPoint++; });
         Debug.Log("Current Energy: " + currentEnergy);
     }
 }
