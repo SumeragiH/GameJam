@@ -2,20 +2,17 @@ using UnityEngine;
 
 public class RayCastRegionProvider : RegionProviderBase
 {
-    [Header("RayCast Region")]
-    [Range(0, 2)] [SerializeField] private int _rayIndex = 0;
-    [SerializeField, Min(0.05f)] private float _rayRangeViewport = 3f;
-    [SerializeField, Min(0f)] private float _screenEdgeInset = 0f;
+    private int _rayIndex = 0;
+    private float _rayRangeViewport = 3f;
+    private float _screenEdgeInset = 0f;
 
-    [Header("Center Direction (Degrees)")]
-    [SerializeField, Range(-180f, 180f)] private float _leftTopCenterAngle = -30f;
-    [SerializeField, Range(-180f, 180f)] private float _rightTopCenterAngle = -150f;
-    [SerializeField, Range(-180f, 180f)] private float _topCenterCenterAngle = -90f;
+    private float _leftTopCenterAngle = -30f;
+    private float _rightTopCenterAngle = -150f;
+    private float _topCenterCenterAngle = -90f;
 
-    [Header("Spread Angle (Degrees)")]
-    [SerializeField, Range(1f, 178f)] private float _leftTopSpreadAngle = 30f;
-    [SerializeField, Range(1f, 178f)] private float _rightTopSpreadAngle = 30f;
-    [SerializeField, Range(1f, 178f)] private float _topCenterSpreadAngle = 45f;
+    private float _leftTopSpreadAngle = 30f;
+    private float _rightTopSpreadAngle = 30f;
+    private float _topCenterSpreadAngle = 45f;
 
     public int RayIndex
     {
