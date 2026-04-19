@@ -22,11 +22,10 @@ public class SpringPlot : MonoBehaviour
             PlotCollider.isTrigger = true;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    public void OnTriggerStay2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
-
-        if (onlyFromAbove && !IsFromAbove(other)) return;
+        //if (onlyFromAbove && !IsFromAbove(other)) return;
         PlayerView playerView = other.GetComponent<PlayerView>();
         playerView.ApplySpringBounce(bounceVelocity);
     }

@@ -107,10 +107,9 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
 
     public void ApplySpringBounce(float velocity)
     {
-        // 常见做法：清掉当前竖直速度，避免叠加不稳定
-        Vector2 v = rigidbody2D.velocity;   // 如果你Unity版本API不支持，可改成 _rb.velocity
-        v.y = 0f;
-        rigidbody2D.velocity = v;           // 或 _rb.velocity = v
+        Debug.Log("应用弹簧弹跳，速度：" + velocity);
+        //重置竖直速度，确保每次弹跳都能获得相同的弹跳力度
+        rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, 0f);
 
         rigidbody2D.AddForce(Vector2.up * velocity, ForceMode2D.Impulse);
     }
