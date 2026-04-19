@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class EnergySystem : MonoBehaviour
 {
-    public int currentEnergy = 0;// 当前能量值
+    public int currentEnergy; // 当前能量值
     public List<EnergyBar> energyBars; // 能量条列表
 
     private void Start()
     {
+        currentEnergy = CollectionSystem.Instance.stageScanPoint;
         Init();
     }
     public void ConsumeEnergy(int amount)
