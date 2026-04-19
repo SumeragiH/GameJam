@@ -229,6 +229,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   checkPointID: 0
   safeZoneCoverView: {fileID: 5675729334436927639}
+  hasBeenSaved: 0
 --- !u!1 &8227676881637691486
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,7 +334,8 @@ MonoBehaviour:
   _playerTag: Player
   regionProvider: {fileID: 5143777352977138276}
   coverEnabled: 1
-  <shiftable>k__BackingField: 0
+  <shiftable>k__BackingField: 1
+  zoomedScale: 2
   safeZoneIndex: -1
   linkedSafeZone: {fileID: 2143635328180396299}
   linkedCheckPoint: {fileID: 3081690242870974866}
