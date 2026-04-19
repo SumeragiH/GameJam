@@ -14,6 +14,25 @@ public class SafeZoneCoverView : CoverView
     public int safeZoneIndex = -1;
     // 安全区检测物体
     [SerializeField] private SafeZoneView linkedSafeZone;
+    // 安全区链接的检查点
+    [SerializeField] private CheckPointView linkedCheckPoint;
+
+    public void SyncLinkedCheckPointBySafeZoneIndex()
+    {
+        if (linkedCheckPoint == null)
+        {
+            return;
+        }
+
+        linkedCheckPoint.checkPointID = safeZoneIndex;
+
+        if (linkedCheckPoint.checkPointData == null)
+        {
+            linkedCheckPoint.checkPointData = new CheckPointData();
+        }
+
+        linkedCheckPoint.checkPointData.safeZoneIndex = safeZoneIndex;
+    }
 
     protected override void Start()
     {
@@ -72,6 +91,7 @@ public class SafeZoneCoverView : CoverView
     protected override void OnCoverEnabled()
     {
         base.OnCoverEnabled();
+        linkedCheckPoint?.ShowCheckPoint();
         if (linkedSafeZone != null)
         {
             linkedSafeZone.safeZoneEnable = true;
@@ -81,6 +101,7 @@ public class SafeZoneCoverView : CoverView
     protected override void OnCoverDisable()
     {
         base.OnCoverDisable();
+        linkedCheckPoint?.HideCheckPoint();
         if (linkedSafeZone != null)
         {
             linkedSafeZone.safeZoneEnable = false;

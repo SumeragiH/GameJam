@@ -15,6 +15,7 @@ public class SafeZoneSystem : SingletonBaseWithMono<SafeZoneSystem>
         for (int i = 0; i < safeZoneViews.Count; i++)
         {
             safeZoneViews[i].safeZoneIndex = i;
+            safeZoneViews[i].SyncLinkedCheckPointBySafeZoneIndex();
         }
         presentSafeZoneIndex = 0;
         EventCenter.Instance.EventTrigger("同步安全区遮罩", safeZoneViews);

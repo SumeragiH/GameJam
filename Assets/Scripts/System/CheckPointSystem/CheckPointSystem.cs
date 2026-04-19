@@ -13,6 +13,7 @@ public class CheckPointSystem : SingletonBaseWithMono<CheckPointSystem>
         currentStageIndex = checkPointData.checkPointID;//每次保存检查点时，获得存档点的ID
         CheckPoints.Add(checkPointData.checkPointID, checkPointData.checkPointData);//将检查点数据添加到字典中，键为检查点ID，值为检查点数据
         CollectionSystem.Instance.stageCacheScanPoints.Clear();//清空当前关卡的扫描点缓存列表
+        EventCenter.Instance.AddListener("玩家死亡", LoadCheckPoint);
     }
     public void LoadCheckPoint()
     {
@@ -21,6 +22,9 @@ public class CheckPointSystem : SingletonBaseWithMono<CheckPointSystem>
             CheckPointData checkPointData = CheckPoints[currentStageIndex];
             PlayerView.Instance.ResetPlayer(checkPointData);
             CollectionSystem.Instance.ResetCollection(checkPointData);
+
+            // 重置遮罩
+            CoverSystem.Instance.ResetCover(checkPointData);
         }
         else
         {

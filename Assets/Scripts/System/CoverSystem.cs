@@ -268,4 +268,42 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         RebuildCoverCache();
         RefreshCoverState();
     }
+
+    public void ResetCover(CheckPointData checkPointData)
+    {
+        // 重置所有integral cover
+        foreach (var coverView in _integralCoverViews.Values)
+        {
+            if (coverView != null && coverView.shiftable)
+            {
+                coverView.ResetCover();
+                coverView.CoverEnabled = false;
+            }
+        }
+
+        // 重置所有safezone cover
+        foreach (var safeZoneCover in safezoneCoverViews)
+        {
+            if (safeZoneCover != null)
+            {
+                safeZoneCover.ResetCover();
+                safeZoneCover.CoverEnabled = false;
+            }
+        }
+
+        // 激活检查点对应的遮罩
+        if (checkPointData.safeZoneIndex >= 0 && checkPointData.safeZoneIndex < safezoneCoverViews.Count)
+        {
+            SafeZoneCoverView targetSafeZoneCover = safezoneCoverViews[checkPointData.safeZoneIndex];
+            if (targetSafeZoneCover != null)
+            {
+                targetSafeZoneCover.CoverEnabled = true;
+            }
+        }
+
+
+        selectedCoverType = CoverEnum.None;
+        RebuildCoverCache();
+        RefreshCoverState();
+    }
 }
