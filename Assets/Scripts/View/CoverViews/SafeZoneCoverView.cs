@@ -69,6 +69,7 @@ public class SafeZoneCoverView : CoverView
         if (_circleRegionProvider != null)
         {
             _circleRegionProvider.SetZoomScale(zoomedScale);
+            _circleRegionProvider.SetRadius(_baseColliderRadius);
             _circleRegionProvider.IsZoomed = isZoomed;
         }
     }
