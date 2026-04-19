@@ -22,6 +22,11 @@ public class CheckPointSystem : SingletonBaseWithMono<CheckPointSystem>
     }
     public void LoadCheckPoint()
     {
+        if (PlayerView.Instance.invincible)
+        {
+            return;
+        }
+
         if (_isLoadingCheckPoint)
         {
             return;
