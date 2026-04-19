@@ -55,6 +55,39 @@ public class CheckPointSystem : SingletonBaseWithMono<CheckPointSystem>
         }
     }
 
+    /// <summary>
+    /// 暂时作为reset按钮专用的加载检查点方法，不用考虑角色无敌
+    /// </summary>
+    public void LoadCheckPointWithReset()
+    {
+        if (_isLoadingCheckPoint)
+        {
+            return;
+        }
+
+        if (CheckPoints.ContainsKey(currentStageIndex))
+        {
+            _isLoadingCheckPoint = true;
+            try
+            {
+                CheckPointData checkPointData = CheckPoints[currentStageIndex];
+                PlayerView.Instance.ResetPlayer(checkPointData);
+                CollectionSystem.Instance.ResetCollection(checkPointData);
+
+                // 重置遮罩
+                CoverSystem.Instance.ResetCover(checkPointData);
+            }
+            finally
+            {
+                _isLoadingCheckPoint = false;
+            }
+        }
+        else
+        {
+            Debug.LogWarning("没有可用的检查点数据！");
+        }
+    }
+
     public void ClearCheckPoints()
     {
         CheckPoints.Clear();

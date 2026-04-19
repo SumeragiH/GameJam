@@ -2968,6 +2968,10 @@ PrefabInstance:
       propertyPath: jumpForce
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 4718122258518152191, guid: 14f5f14ad4926c142802a051ea67e702, type: 3}
+      propertyPath: invincible
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7215038838005508535, guid: 14f5f14ad4926c142802a051ea67e702, type: 3}
       propertyPath: m_Mass
       value: 1.0207163
