@@ -172,6 +172,8 @@ public class PlayerView : SingletonBaseWithMono<PlayerView>
         jumpCount = 0; // 重置跳跃计数器
         Debug.Log("重置玩家状态");
         this.transform.position = checkPointData.playerPosition; // 重置玩家位置
+        //重置玩家速度
+        rigidbody2D.velocity = Vector2.zero; // 重置玩家速度
     }
 
 
