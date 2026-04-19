@@ -29,8 +29,12 @@ public class DarkenOutsideRegionsRendererFeature : ScriptableRendererFeature
             _material = CoreUtils.CreateEngineMaterial(_shader);
         }
 
+        RenderPassEvent passEvent = _renderPassEvent < RenderPassEvent.AfterRenderingTransparents
+            ? RenderPassEvent.AfterRenderingTransparents
+            : _renderPassEvent;
+
         _pass ??= new DarkenOutsideRegionsPass();
-        _pass.Configure(_material, _renderPassEvent, _maxRegions);
+        _pass.Configure(_material, passEvent, _maxRegions);
     }
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
