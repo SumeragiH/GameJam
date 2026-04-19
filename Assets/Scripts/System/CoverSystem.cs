@@ -214,11 +214,16 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
 
     private void OnShiftPressed()
     {
+        if (!CollectionSystem.Instance.EnergyConsumable())
+        {
+            return;
+        }
         if (sceneCoverTypes.Contains(selectedCoverType))
         {
             if (selectedCoverType == CoverEnum.SafeZone)
             {
                 SafeZoneSystem.Instance.ShiftSafeZoneZoom();
+                CollectionSystem.Instance.ConsumeEnergy();
             }
             else if (selectedCoverType == CoverEnum.Scan) 
             {
@@ -232,6 +237,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
                 if (currecntCoverView.shiftable)
                 {
                     currecntCoverView.ShiftState();
+                    CollectionSystem.Instance.ConsumeEnergy();
                 }
             }
         }
@@ -243,6 +249,10 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
 
     private void OnSelectedCoverIndexChanged(int index)
     {
+        if (!CollectionSystem.Instance.EnergyConsumable())
+        {
+            return;
+        }
         if (index <= -1 || index >= sceneCoverTypes.Count)
         {
             Debug.LogError($"CoverSystem: Invalid scene cover view index {index}. It should be between 0 and {sceneCoverTypes.Count - 1}.");
@@ -288,6 +298,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         }
         selectedCoverType = sceneCoverTypes[index];
         RebuildCoverCache();
+        CollectionSystem.Instance.ConsumeEnergy();
         if (selectedCoverType == CoverEnum.SafeZone)
         {
             // pass
