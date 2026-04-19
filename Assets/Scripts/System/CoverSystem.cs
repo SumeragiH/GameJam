@@ -226,6 +226,9 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
             return;
         }
 
+        // if (selectedCoverType == sceneCoverTypes[index])
+        //     return;
+        // 
 
         // 特判：只有在安全区中才能扫描
         if (sceneCoverTypes[index] == CoverEnum.Scan && !SafeZoneSystem.Instance.IsPlayerInSafeZone())
