@@ -9,6 +9,9 @@ public class SafeZoneSystem : SingletonBaseWithMono<SafeZoneSystem>
     private int presentSafeZoneIndex = 0;
     private bool isPlayerInSafeZone = true;
 
+    [SerializeField] public float energyRecoverInterval = 3.0f;
+    private float energyRecoverTimer = 0f;
+
     void Start()
     {
         // 设置safeZoneView的index
@@ -21,6 +24,23 @@ public class SafeZoneSystem : SingletonBaseWithMono<SafeZoneSystem>
         EventCenter.Instance.EventTrigger("同步安全区遮罩", safeZoneViews);
         EventCenter.Instance.AddListener<int>("玩家进入安全区", OnPlayerEnterSafeZone);
         EventCenter.Instance.AddListener<int>("玩家离开安全区", OnPlayerExitSafeZone);
+    }
+
+    void FixedUpdate()
+    {
+        if (isPlayerInSafeZone)
+        {
+            energyRecoverTimer += Time.fixedDeltaTime;
+            if (energyRecoverTimer >= energyRecoverInterval)
+            {
+                energyRecoverTimer = 0f;
+                CollectionSystem.Instance.RecoverEnergy();
+            }
+        }
+        else
+        {
+            energyRecoverTimer = 0f;
+        }
     }
 
     /// <summary>
@@ -128,6 +148,7 @@ public class SafeZoneSystem : SingletonBaseWithMono<SafeZoneSystem>
     {
         Debug.Log($"玩家离开安全区 {index}");
         isPlayerInSafeZone = false;
+        energyRecoverTimer = 0f;
     }
 
     public void TryActivateNextSafeZoneByScan(int scannedSafeZoneIndex)

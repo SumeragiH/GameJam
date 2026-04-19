@@ -40,9 +40,14 @@ public class CollectionSystem : SingletonBaseWithMono<CollectionSystem>
 
     }
 
-    public void SlowlyRecoverEnergy()
+    public bool EnergyConsumable()
     {
-        GamePanel.Instance.energySystem.SlowlyRecover();
+        return GamePanel.Instance.energySystem.currentEnergy > 0;
+    }
+
+    public void RecoverEnergy()
+    {
+        GamePanel.Instance.energySystem.AddEnergy(1);
     }
 
     public void ConsumeEnergy()
