@@ -5,4 +5,5 @@ public enum CoverEnum
     None, 
     SafeZone,
     Scan,
+    RayCast,
 }
