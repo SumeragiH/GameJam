@@ -21,8 +21,6 @@ public class CheckPointView : MonoBehaviour
     public void Start()
     {
         //除了第一次进入场景时，其他时候都需要隐藏检查点，通过扫描来显示
-        if (checkPointID!=0)
-            HideCheckPoint();
         checkPointData = new CheckPointData();
         checkPointData.SetCheckPointData(Vector2.zero, 0, safeZoneCoverView.safeZoneIndex);
     }
