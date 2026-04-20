@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class RayCastCoverView : CoverView
 {
+    private const int LeftRayIndex = 0;
+    private const int RightRayIndex = 2;
+    private const int RayStateCount = 3;
+
     [Header("Bindings")]
     [SerializeField] private RayCastRegionProvider _rayCastRegionProvider;
     [SerializeField] private PolygonCollider2D _rayCastCollider;
@@ -84,14 +88,14 @@ public class RayCastCoverView : CoverView
 
     public override void ShiftState()
     {
-        _rayIndex = (_rayIndex + 1) % 3;
+        _rayIndex = (_rayIndex + 1) % RayStateCount;
         ApplyControlToRegion();
         SyncColliderToRegion();
     }
 
     public override void ResetCover()
     {
-        _rayIndex = 0;
+        _rayIndex = LeftRayIndex;
         ApplyControlToRegion();
         SyncColliderToRegion();
         CoverEnabled = true;
@@ -247,7 +251,7 @@ public class RayCastCoverView : CoverView
 
     private void OnValidate()
     {
-        _rayIndex = Mathf.Clamp(_rayIndex, 0, 2);
+        _rayIndex = Mathf.Clamp(_rayIndex, LeftRayIndex, RightRayIndex);
         _rayRangeViewport = Mathf.Max(0.05f, _rayRangeViewport);
         _screenEdgeInset = Mathf.Max(0f, _screenEdgeInset);
         _leftTopCenterAngle = Mathf.Clamp(_leftTopCenterAngle, -180f, 180f);

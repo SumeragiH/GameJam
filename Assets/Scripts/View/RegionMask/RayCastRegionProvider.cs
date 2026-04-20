@@ -2,6 +2,11 @@ using UnityEngine;
 
 public class RayCastRegionProvider : RegionProviderBase
 {
+    private const int LeftRayIndex = 0;
+    private const int CenterRayIndex = 1;
+    private const int RightRayIndex = 2;
+    private const int RayStateCount = 3;
+
     private int _rayIndex = 0;
     private float _rayRangeViewport = 3f;
     private float _screenEdgeInset = 0f;
@@ -17,7 +22,7 @@ public class RayCastRegionProvider : RegionProviderBase
     public int RayIndex
     {
         get => _rayIndex;
-        set => _rayIndex = Mathf.Clamp(value, 0, 2);
+        set => _rayIndex = Mathf.Clamp(value, LeftRayIndex, RightRayIndex);
     }
 
     public float RayRangeViewport
@@ -86,12 +91,7 @@ public class RayCastRegionProvider : RegionProviderBase
 
     public bool TryShiftNextState()
     {
-        if (_rayIndex >= 2)
-        {
-            return false;
-        }
-
-        _rayIndex++;
+        _rayIndex = (_rayIndex + 1) % RayStateCount;
         return true;
     }
 
@@ -149,46 +149,46 @@ public class RayCastRegionProvider : RegionProviderBase
     {
         float min = inset;
         float max = 1f - inset;
-        switch (Mathf.Clamp(index, 0, 2))
+        switch (Mathf.Clamp(index, LeftRayIndex, RightRayIndex))
         {
-            case 0:
+            case LeftRayIndex:
                 return new Vector2(min, max);
-            case 1:
-                return new Vector2(max, max);
-            default:
+            case CenterRayIndex:
                 return new Vector2(0.5f, max);
+            default:
+                return new Vector2(max, max);
         }
     }
 
     private float EvaluateCenterAngle(int index)
     {
-        switch (Mathf.Clamp(index, 0, 2))
+        switch (Mathf.Clamp(index, LeftRayIndex, RightRayIndex))
         {
-            case 0:
+            case LeftRayIndex:
                 return _leftTopCenterAngle;
-            case 1:
-                return _rightTopCenterAngle;
-            default:
+            case CenterRayIndex:
                 return _topCenterCenterAngle;
+            default:
+                return _rightTopCenterAngle;
         }
     }
 
     private float EvaluateSpreadAngle(int index)
     {
-        switch (Mathf.Clamp(index, 0, 2))
+        switch (Mathf.Clamp(index, LeftRayIndex, RightRayIndex))
         {
-            case 0:
+            case LeftRayIndex:
                 return _leftTopSpreadAngle;
-            case 1:
-                return _rightTopSpreadAngle;
-            default:
+            case CenterRayIndex:
                 return _topCenterSpreadAngle;
+            default:
+                return _rightTopSpreadAngle;
         }
     }
 
     private void OnValidate()
     {
-        _rayIndex = Mathf.Clamp(_rayIndex, 0, 2);
+        _rayIndex = Mathf.Clamp(_rayIndex, LeftRayIndex, RightRayIndex);
         _rayRangeViewport = Mathf.Max(0.05f, _rayRangeViewport);
         _leftTopSpreadAngle = Mathf.Clamp(_leftTopSpreadAngle, 1f, 178f);
         _rightTopSpreadAngle = Mathf.Clamp(_rightTopSpreadAngle, 1f, 178f);
