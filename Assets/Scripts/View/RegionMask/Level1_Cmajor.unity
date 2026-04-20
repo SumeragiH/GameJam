@@ -1357,11 +1357,7 @@ MonoBehaviour:
   - {fileID: 1956759405}
   - {fileID: 1605755106}
   - {fileID: 936943495}
-<<<<<<< HEAD
-  - {fileID: 599898377}
-=======
   - {fileID: 1385538006}
->>>>>>> cf4732179c59fb15f9c374a2059c745213890560
   - {fileID: 1645059368}
   energyRecoverInterval: 3
 --- !u!1001 &685393253
@@ -2425,13 +2421,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   regionImages:
   - {fileID: 1628366589}
-<<<<<<< HEAD
-  - {fileID: 1388051711}
-  - {fileID: 1388051710}
-=======
   - {fileID: 0}
   - {fileID: 0}
->>>>>>> cf4732179c59fb15f9c374a2059c745213890560
 --- !u!1 &1159123485
 GameObject:
   m_ObjectHideFlags: 0
@@ -2573,8 +2564,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4074744817626909103, guid: fccbbe729d20bf24e94b829700a7b297, type: 3}
   m_PrefabInstance: {fileID: 346691836}
   m_PrefabAsset: {fileID: 0}
-<<<<<<< HEAD
-=======
 --- !u!114 &1276679727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2667,7 +2656,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cce3b46c39c34a74c891f2b64ff35608, type: 3}
->>>>>>> cf4732179c59fb15f9c374a2059c745213890560
 --- !u!1001 &1380415467
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2846,11 +2834,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-<<<<<<< HEAD
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-=======
     m_RemovedGameObjects:
     - {fileID: 490146240541827083, guid: c8ee927f1db81ca4d9de106e7be05f1b, type: 3}
     m_AddedGameObjects:
@@ -2861,7 +2844,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8095519923297306092, guid: c8ee927f1db81ca4d9de106e7be05f1b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1628366589}
->>>>>>> cf4732179c59fb15f9c374a2059c745213890560
   m_SourcePrefab: {fileID: 100100000, guid: c8ee927f1db81ca4d9de106e7be05f1b, type: 3}
 --- !u!114 &1388051710 stripped
 MonoBehaviour:
