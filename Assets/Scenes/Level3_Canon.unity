@@ -4256,6 +4256,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -457.5
       objectReference: {fileID: 0}
+    - target: {fileID: 986840540359025603, guid: c8ee927f1db81ca4d9de106e7be05f1b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1957665937606358211, guid: c8ee927f1db81ca4d9de106e7be05f1b, type: 3}
       propertyPath: m_Name
       value: GamePanel
@@ -4371,6 +4375,10 @@ PrefabInstance:
     - target: {fileID: 4806474165309852437, guid: c8ee927f1db81ca4d9de106e7be05f1b, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -459.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790576721880732580, guid: c8ee927f1db81ca4d9de106e7be05f1b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
