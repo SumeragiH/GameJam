@@ -108,6 +108,54 @@ public class ScanRegionProvider : RegionProviderBase
         return true;
     }
 
+    public bool TrySnapToStateIndex(int stateIndex)
+    {
+        Camera camera = ResolveRuntimeCamera();
+        if (camera == null)
+        {
+            return false;
+        }
+
+        int clampedStateIndex = Mathf.Clamp(stateIndex, 0, 3);
+        LitRegionIndex = clampedStateIndex;
+        Vector3 targetWorldCenter = CalculateWorldTarget(clampedStateIndex, camera);
+        SnapToWorldCenter(targetWorldCenter);
+        return true;
+    }
+
+    public bool TrySnapToWorldPosition(Vector3 worldPosition)
+    {
+        Camera camera = ResolveRuntimeCamera();
+        if (camera == null)
+        {
+            return false;
+        }
+
+        Vector3 viewport = camera.WorldToViewportPoint(worldPosition);
+        if (viewport.z <= 0f)
+        {
+            return false;
+        }
+
+        SnapToWorldCenter(worldPosition);
+        return true;
+    }
+
+    public bool TrySnapToViewportPosition(Vector2 viewportPosition)
+    {
+        Camera camera = ResolveRuntimeCamera();
+        if (camera == null)
+        {
+            return false;
+        }
+
+        Transform anchor = _worldAnchor != null ? _worldAnchor : transform;
+        float depth = GetReferenceDepth(camera, anchor.position);
+        Vector3 worldPosition = camera.ViewportToWorldPoint(new Vector3(viewportPosition.x, viewportPosition.y, depth));
+        SnapToWorldCenter(worldPosition);
+        return true;
+    }
+
     private void RefreshTargetImmediatelyIfNeeded()
     {
         if (!Application.isPlaying)
@@ -132,6 +180,15 @@ public class ScanRegionProvider : RegionProviderBase
         _lastTargetIndex = targetIndex;
         _targetWorldCenter = CalculateWorldTarget(targetIndex, camera);
         _worldMoveSpeed = Vector3.Distance(_currentWorldCenter, _targetWorldCenter) / Mathf.Max(0.01f, RegionChangeDeltaTime);
+    }
+
+    private void SnapToWorldCenter(Vector3 worldCenter)
+    {
+        _currentWorldCenter = worldCenter;
+        _targetWorldCenter = worldCenter;
+        _hasWorldCenter = true;
+        _worldMoveSpeed = 0f;
+        _lastTargetIndex = Mathf.Clamp(LitRegionIndex, 0, 3);
     }
 
     public bool TryGetWorldGeometry(out Vector3 centerWorld, out float halfWidthWorld)
