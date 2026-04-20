@@ -46,6 +46,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
     public IReadOnlyCollection<CoverView> ActiveCovers => activeCovers;
     private bool FirstTimeShiftScan = true;
 
+
     private void OnEnable()
     {
         EventCenter.Instance.AddListener<CoverView>("玩家进入遮罩", OnPlayerEnteredCover);
@@ -224,7 +225,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
                 {
                     if (FirstTimeLackEnergy)
                     {
-                        FirstTimeLackEnergy = false;
+                        // FirstTimeLackEnergy = false;
                         GameSystem.Instance.ShowTip("注意，你的操作需要消耗能量", 3f);
                     }
                     return;
@@ -244,7 +245,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
                 {
                     if (FirstTimeLackEnergy)
                     {
-                        FirstTimeLackEnergy = false;
+                        // FirstTimeLackEnergy = false;
                         GameSystem.Instance.ShowTip("注意，你的操作需要消耗能量", 3f);
                     }
                     return;
@@ -269,7 +270,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         {
             if (FirstTimeLackEnergy)
             {
-                FirstTimeLackEnergy = false;
+                // FirstTimeLackEnergy = false;
                 GameSystem.Instance.ShowTip("注意，你的操作需要消耗能量", 3f);
             }
             return;
@@ -318,6 +319,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
             }
         }
         selectedCoverType = sceneCoverTypes[index];
+        RegionImageManageSystem.Instance.SetHighlightedRegion(index);
         RebuildCoverCache();
         CollectionSystem.Instance.ConsumeEnergy();
         if (selectedCoverType == CoverEnum.SafeZone)

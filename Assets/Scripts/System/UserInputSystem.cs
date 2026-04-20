@@ -12,6 +12,7 @@ public class UserInputSystem : SingletonBaseWithMono<UserInputSystem>
 
     private float shiftPressTimer = 0f;
     private int selectedCoverIndex = -1;
+    private int previousSelectedCoverIndex = -1;
 
     void Start()
     {
@@ -40,33 +41,59 @@ public class UserInputSystem : SingletonBaseWithMono<UserInputSystem>
 
     private void CheckNumber()
     {
+        if (!Input.GetKeyDown(KeyCode.Alpha1) && !Input.GetKeyDown(KeyCode.Alpha2) && !Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            return; // 如果没有按下数字键，直接返回
+        }
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             if (selectedCoverIndex == 0)
                 selectedCoverIndex = -1; // 再次按下同一数字键取消选择
             else
+            {
                 selectedCoverIndex = 0;
+                previousSelectedCoverIndex = selectedCoverIndex;
+            }
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             if (selectedCoverIndex == 1)
                 selectedCoverIndex = -1; // 再次按下同一数字键取消选择
             else
+            {
                 selectedCoverIndex = 1;
+                previousSelectedCoverIndex = selectedCoverIndex;
+            }
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             if (selectedCoverIndex == 2)
                 selectedCoverIndex = -1; // 再次按下同一数字键取消选择
             else
+            {
                 selectedCoverIndex = 2;
+                previousSelectedCoverIndex = selectedCoverIndex;
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha4))
+        // else if (Input.GetKeyDown(KeyCode.Alpha4))
+        // {
+        //     if (selectedCoverIndex == 3)
+        //         selectedCoverIndex = -1; // 再次按下同一数字键取消选择
+        //     else
+        //         selectedCoverIndex = 3;
+        // }
+        if (selectedCoverIndex != -1)
         {
-            if (selectedCoverIndex == 3)
-                selectedCoverIndex = -1; // 再次按下同一数字键取消选择
-            else
-                selectedCoverIndex = 3;
+            RegionImageManageSystem.Instance.SetHighlightedRegion(selectedCoverIndex);
+        }
+        else if (previousSelectedCoverIndex != -1)
+        {
+            RegionImageManageSystem.Instance.SetHighlightedRegion(previousSelectedCoverIndex);
+        }
+        else
+        {
+            RegionImageManageSystem.Instance.ResetHighlights();
         }
     }
 
@@ -84,8 +111,9 @@ public class UserInputSystem : SingletonBaseWithMono<UserInputSystem>
             }
             if (selectedCoverIndex != -1)
             {
-                EventCenter.Instance.EventTrigger("选择遮罩序号", selectedCoverIndex);
                 selectedCoverIndex = -1;
+                RegionImageManageSystem.Instance.ResetHighlights();
+                EventCenter.Instance.EventTrigger("选择遮罩序号", selectedCoverIndex);
             }
             else
             {
