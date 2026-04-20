@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 8640380997002256223}
   - component: {fileID: 630742546015864075}
   - component: {fileID: 5313398307508741588}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: block12
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
