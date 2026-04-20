@@ -11,6 +11,7 @@ public class SkipScene : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             Skip();
+            Destroy(collision.gameObject);
         }
     }
 
