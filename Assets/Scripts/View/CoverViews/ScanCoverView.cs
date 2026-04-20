@@ -25,21 +25,25 @@ public class ScanCoverView : CoverView
     protected override void Start()
     {
         base.Start();
-        if (_scanRegionProvider == null)
-        {
-            _scanRegionProvider = GetComponent<ScanRegionProvider>();
-        }
-
-        if (_scanCollider == null)
-        {
-            _scanCollider = GetComponent<PolygonCollider2D>();
-        }
+        ResolveBindings();
 
         _scanOverlapFilter = default;
         _scanOverlapFilter.NoFilter();
         scanFinished = false;
         _currentState = Mathf.Clamp(_currentState, 0, 3);
         ApplyControlToProvider();
+    }
+
+    protected override void OnCoverEnabled()
+    {
+        base.OnCoverEnabled();
+        ResolveBindings();
+
+        _currentState = 0;
+        scanFinished = false;
+        ApplyControlToProvider();
+        _scanRegionProvider?.TrySnapToStateIndex(0);
+        SyncFromProviderGeometry();
     }
 
     private void LateUpdate()
@@ -49,29 +53,9 @@ public class ScanCoverView : CoverView
             return;
         }
 
-        if (!_scanRegionProvider.TryGetWorldParallelogram(
-                out Vector3 centerWorld,
-                out Vector3 topLeftWorld,
-                out Vector3 topRightWorld,
-                out Vector3 bottomRightWorld,
-                out Vector3 bottomLeftWorld))
+        if (!SyncFromProviderGeometry())
         {
             return;
-        }
-
-        if (_syncTransformToRegion)
-        {
-            Vector3 position = transform.position;
-            transform.position = new Vector3(centerWorld.x, centerWorld.y, position.z);
-        }
-
-        if (_syncPolygonToRegion && _scanCollider != null)
-        {
-            _polygonPoints[0] = transform.InverseTransformPoint(topLeftWorld);
-            _polygonPoints[1] = transform.InverseTransformPoint(topRightWorld);
-            _polygonPoints[2] = transform.InverseTransformPoint(bottomRightWorld);
-            _polygonPoints[3] = transform.InverseTransformPoint(bottomLeftWorld);
-            _scanCollider.SetPath(0, _polygonPoints);
         }
 
         if (_currentState >= 3 && !_scanRegionProvider.IsMoving)
@@ -121,6 +105,54 @@ public class ScanCoverView : CoverView
         _scanRegionProvider.MoveDuration = _moveDuration;
         _scanRegionProvider.WidthScale = _widthScale;
         _scanRegionProvider.SetStateIndex(_currentState);
+    }
+
+    private void ResolveBindings()
+    {
+        if (_scanRegionProvider == null)
+        {
+            _scanRegionProvider = GetComponent<ScanRegionProvider>();
+        }
+
+        if (_scanCollider == null)
+        {
+            _scanCollider = GetComponent<PolygonCollider2D>();
+        }
+    }
+
+    private bool SyncFromProviderGeometry()
+    {
+        if (_scanRegionProvider == null)
+        {
+            return false;
+        }
+
+        if (!_scanRegionProvider.TryGetWorldParallelogram(
+                out Vector3 centerWorld,
+                out Vector3 topLeftWorld,
+                out Vector3 topRightWorld,
+                out Vector3 bottomRightWorld,
+                out Vector3 bottomLeftWorld))
+        {
+            return false;
+        }
+
+        if (_syncTransformToRegion)
+        {
+            Vector3 position = transform.position;
+            transform.position = new Vector3(centerWorld.x, centerWorld.y, position.z);
+        }
+
+        if (_syncPolygonToRegion && _scanCollider != null)
+        {
+            _polygonPoints[0] = transform.InverseTransformPoint(topLeftWorld);
+            _polygonPoints[1] = transform.InverseTransformPoint(topRightWorld);
+            _polygonPoints[2] = transform.InverseTransformPoint(bottomRightWorld);
+            _polygonPoints[3] = transform.InverseTransformPoint(bottomLeftWorld);
+            _scanCollider.SetPath(0, _polygonPoints);
+        }
+
+        return true;
     }
 
     public override void ResetCover()

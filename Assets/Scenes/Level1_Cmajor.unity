@@ -1604,6 +1604,7 @@ Transform:
   - {fileID: 1049894132}
   - {fileID: 885401478}
   - {fileID: 198892931}
+  - {fileID: 122859300}
   - {fileID: 2073596146}
   - {fileID: 196095260}
   - {fileID: 257158908}
@@ -2667,6 +2668,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4684480388757923985, guid: c8ee927f1db81ca4d9de106e7be05f1b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7790576721880732580, guid: c8ee927f1db81ca4d9de106e7be05f1b, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
