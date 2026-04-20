@@ -300,7 +300,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         // 特判：只有在安全区中才能扫描
         if (sceneCoverTypes[index] == CoverEnum.Scan && !SafeZoneSystem.Instance.IsPlayerInSafeZone())
         {
-            Debug.LogWarning("无法选择Scan遮罩，因为玩家不在安全区内");
+            GameSystem.Instance.ShowTip("在安全区域内进行扫描！", 3f);
             return;
         }
 
@@ -419,5 +419,14 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
         selectedIndex = -1;
         RebuildCoverCache();
         RefreshCoverState();
+    }
+
+    public CoverView GetCoverView(CoverEnum type)
+    {
+        if (_integralCoverViews.TryGetValue(type, out CoverView coverView))
+        {
+            return coverView;
+        }
+        return null;
     }
 }

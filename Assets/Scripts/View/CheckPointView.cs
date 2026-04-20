@@ -16,6 +16,7 @@ public class CheckPointView : MonoBehaviour
 
     [SerializeField] private bool shouldMoveCamera = false; // 是否需要在这个检查点移动摄像头
     [SerializeField] private CameraView targetCamera;
+    [SerializeField] private CheckPointLogicView checkPointLogicView; // 关联的检查点逻辑组件
 
     public void Start()
     {
@@ -39,6 +40,7 @@ public class CheckPointView : MonoBehaviour
             {
                 targetCamera?.MoveNext();
             }
+            checkPointLogicView?.ReachCheckpoint();
         }
     }
 

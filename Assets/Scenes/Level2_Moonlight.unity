@@ -5549,6 +5549,14 @@ PrefabInstance:
       propertyPath: m_Radius
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 3081690242870974866, guid: 75a32d6435e805a4cb5431a70dae7631, type: 3}
+      propertyPath: shouldMoveCamera
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3081690242870974866, guid: 75a32d6435e805a4cb5431a70dae7631, type: 3}
+      propertyPath: checkPointLogicView
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4343305001912292252, guid: 75a32d6435e805a4cb5431a70dae7631, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10.77

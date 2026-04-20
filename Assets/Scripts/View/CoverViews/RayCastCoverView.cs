@@ -26,6 +26,38 @@ public class RayCastCoverView : CoverView
     [SerializeField, Range(3, 64)] private int _arcSegments = 24;
     [SerializeField] private bool _syncColliderToRegion = true;
 
+    public float LeftTopCenterAngle
+    {
+        get => _leftTopCenterAngle;
+        set => _leftTopCenterAngle = value;
+    }
+    public float RightTopCenterAngle
+    {
+        get => _rightTopCenterAngle;
+        set => _rightTopCenterAngle = value;
+    }
+    public float TopCenterCenterAngle
+    {
+        get => _topCenterCenterAngle;
+        set => _topCenterCenterAngle = value;
+    }
+    public float LeftTopSpreadAngle
+    {
+        get => _leftTopSpreadAngle;
+        set => _leftTopSpreadAngle = value;
+    }
+    public float RightTopSpreadAngle
+    {
+        get => _rightTopSpreadAngle;
+        set => _rightTopSpreadAngle = value;
+    }
+    public float TopCenterSpreadAngle
+    {
+        get => _topCenterSpreadAngle;
+        set => _topCenterSpreadAngle = value;
+    }
+
+
     private Vector2[] _sectorPathPoints;
     private Camera _runtimeCamera;
     private bool _hasDepth;
