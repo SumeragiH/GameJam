@@ -38,6 +38,6 @@ class GameSystem : SingletonBaseWithMono<GameSystem>
 
     public void ShowTip(string tipContent, float duration)
     {
-        subtitleView?.ShowSubtitle(tipContent, duration);
+        subtitleView.ShowSubtitle(tipContent, duration);
     }
 }
