@@ -53,7 +53,6 @@ public class UserInputSystem : SingletonBaseWithMono<UserInputSystem>
             else
             {
                 selectedCoverIndex = 0;
-                previousSelectedCoverIndex = selectedCoverIndex;
             }
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
@@ -63,7 +62,6 @@ public class UserInputSystem : SingletonBaseWithMono<UserInputSystem>
             else
             {
                 selectedCoverIndex = 1;
-                previousSelectedCoverIndex = selectedCoverIndex;
             }
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
@@ -73,16 +71,8 @@ public class UserInputSystem : SingletonBaseWithMono<UserInputSystem>
             else
             {
                 selectedCoverIndex = 2;
-                previousSelectedCoverIndex = selectedCoverIndex;
             }
         }
-        // else if (Input.GetKeyDown(KeyCode.Alpha4))
-        // {
-        //     if (selectedCoverIndex == 3)
-        //         selectedCoverIndex = -1; // 再次按下同一数字键取消选择
-        //     else
-        //         selectedCoverIndex = 3;
-        // }
         if (selectedCoverIndex != -1)
         {
             RegionImageManageSystem.Instance.SetHighlightedRegion(selectedCoverIndex);
@@ -111,9 +101,19 @@ public class UserInputSystem : SingletonBaseWithMono<UserInputSystem>
             }
             if (selectedCoverIndex != -1)
             {
-                selectedCoverIndex = -1;
                 RegionImageManageSystem.Instance.ResetHighlights();
                 EventCenter.Instance.EventTrigger("选择遮罩序号", selectedCoverIndex);
+
+                if (CoverSystem.Instance.selectedIndex == -1) // 选择失败
+                {
+                    // 不改变
+                }
+                else
+                {
+                    previousSelectedCoverIndex = CoverSystem.Instance.selectedIndex;
+                    selectedCoverIndex = -1;
+                    RegionImageManageSystem.Instance.SetHighlightedRegion(previousSelectedCoverIndex);
+                }
             }
             else
             {

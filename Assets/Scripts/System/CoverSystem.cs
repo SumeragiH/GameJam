@@ -27,6 +27,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
     /// </summary>
     [SerializeField] private List<CoverEnum> sceneCoverTypes = new List<CoverEnum>();
     private CoverEnum selectedCoverType = CoverEnum.None;
+    public int selectedIndex = -1;
 
     /// <summary>
     /// 所有活跃的遮罩
@@ -319,7 +320,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
             }
         }
         selectedCoverType = sceneCoverTypes[index];
-        RegionImageManageSystem.Instance.SetHighlightedRegion(index);
+        selectedIndex = index;
         RebuildCoverCache();
         CollectionSystem.Instance.ConsumeEnergy();
         if (selectedCoverType == CoverEnum.SafeZone)
@@ -402,6 +403,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
             }
 
             selectedCoverType = CoverEnum.None;
+            selectedIndex = -1;
             RebuildCoverCache();
             RefreshCoverState();
         }
@@ -414,6 +416,7 @@ public class CoverSystem : SingletonBaseWithMono<CoverSystem>
     public void ResetSelectedCover()
     {
         selectedCoverType = CoverEnum.None;
+        selectedIndex = -1;
         RebuildCoverCache();
         RefreshCoverState();
     }

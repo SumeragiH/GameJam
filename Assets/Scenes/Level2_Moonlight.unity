@@ -655,8 +655,9 @@ MonoBehaviour:
   - coverEnum: 2
     coverView: {fileID: 1626720899}
   - coverEnum: 3
-    coverView: {fileID: 0}
+    coverView: {fileID: 1932378039}
   sceneCoverTypes: 010000000200000003000000
+  selectedIndex: -1
 --- !u!1001 &329442566
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6919,6 +6920,17 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1932378039 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8328309989544473995, guid: 12ea3c1cc21ee044590dd96d6f4a1288, type: 3}
+  m_PrefabInstance: {fileID: 1160246118}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa23a851cc47f554dbd0667fc335b435, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1953231954
 GameObject:
   m_ObjectHideFlags: 0
