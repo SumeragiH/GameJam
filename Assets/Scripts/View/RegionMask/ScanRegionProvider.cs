@@ -263,7 +263,7 @@ public class ScanRegionProvider : RegionProviderBase
         float fullWidth = aspect;
         float thirdWidth = fullWidth / 3f;
         float baseHalfWidth = thirdWidth * 0.5f;
-        float correctedX = EvaluateCenterX(index, thirdWidth, fullWidth, baseHalfWidth);
+        float correctedX = EvaluateCenterX(index, fullWidth, baseHalfWidth);
         Vector2 viewport = RemoveAspectCorrection(new Vector2(correctedX, 0.5f), aspect);
 
         Transform anchor = _worldAnchor != null ? _worldAnchor : transform;
@@ -286,21 +286,10 @@ public class ScanRegionProvider : RegionProviderBase
         return Vector3.Distance(centerWorld, rightWorld);
     }
 
-    private static float EvaluateCenterX(float slot, float thirdWidth, float fullWidth, float baseHalfWidth)
+    private static float EvaluateCenterX(float slot, float fullWidth, float baseHalfWidth)
     {
-        slot = Mathf.Clamp(slot, 0.0f, 3.0f);
-
-        if (slot <= 1.0f)
-        {
-            return Mathf.Lerp(-baseHalfWidth, thirdWidth, slot);
-        }
-
-        if (slot <= 2.0f)
-        {
-            return Mathf.Lerp(thirdWidth, thirdWidth * 2.0f, slot - 1.0f);
-        }
-
-        return Mathf.Lerp(thirdWidth * 2.0f, fullWidth + baseHalfWidth, slot - 2.0f);
+        float normalized = Mathf.Clamp01(slot / 3.0f);
+        return Mathf.Lerp(-baseHalfWidth, fullWidth + baseHalfWidth, normalized);
     }
 
     private static Vector3 ViewportToWorld(Camera camera, Vector2 correctedViewport, float aspect, float depth)
