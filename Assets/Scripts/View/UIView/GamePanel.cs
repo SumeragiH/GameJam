@@ -15,10 +15,10 @@ public class GamePanel : SingletonBaseWithMono<GamePanel>
     public void Start()
     {
         txtCollectionNum.text = CollectionSystem.Instance.permanentCollectionPoints.ToString();
-        btnReset.onClick.AddListener(OnResetButtonClicked);
+        btnReset?.onClick.AddListener(OnResetButtonClicked);
         //btnRevert.onClick.AddListener(OnRevertButtonClicked);
-        btnMoveNext.onClick.AddListener(OnMoveNextButtonClicked);
-        btnMovePrevious.onClick.AddListener(OnMovePreviousButtonClicked);
+        btnMoveNext?.onClick.AddListener(OnMoveNextButtonClicked);
+        btnMovePrevious?.onClick.AddListener(OnMovePreviousButtonClicked);
     }
 
     public void UpdateCollectionNum(int num)
