@@ -1,58 +1,43 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class InitPanel : BasePanel
 {
     public Button btnStart;
-    public Button btnEnd;
-    public Mask mask;//遮罩
-    public Text gameTitle;//游戏名字
-    public RawImage backGround;//背景
-    public float maskSpeed = 5f;
+    public Image btnStartImage;
+    public Sprite SpriteA;
+    public Sprite SpriteB;
+    public float switchInterval = 0.5f; // 切换间隔（秒）
 
-    public static InitPanelTypeEnum typeEnum = InitPanelTypeEnum.end;//根据不同的枚举显示不同的内容
+    private bool isA = false;
+    private Coroutine switchCoroutine;
 
-    private Vector2 targetRect = new Vector2(300,100);
-    private Vector2 originalRect = new Vector2(0, 0);
-
-    private bool isShowing = false;
     void Start()
     {
-        if (typeEnum == InitPanelTypeEnum.begin)
+        btnStart.onClick.AddListener(OnStartButtonClicked);
+        switchCoroutine = StartCoroutine(SwitchButtonImage());
+    }
+
+    private IEnumerator SwitchButtonImage()
+    {
+        while (true)
         {
-            gameTitle.text = "开始场景";
-            //如果是开始场景
-            targetRect = new Vector2(300, 100);
-            originalRect = new Vector2(0, 0);
-            mask.rectTransform.sizeDelta = originalRect;
-        }
-        else if(typeEnum == InitPanelTypeEnum.end)
-        {
-            gameTitle.text = "结束场景";
-            //如果是结束场景
-            targetRect = new Vector2(0, 0);
-            originalRect = new Vector2(300, 100);
-            mask.rectTransform.sizeDelta = originalRect;
+            isA = !isA;
+            btnStartImage.sprite = isA ? SpriteA : SpriteB;
+            yield return new WaitForSeconds(switchInterval);
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnStartButtonClicked()
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift)||Input.GetKeyDown(KeyCode.RightShift))
-        {
-            isShowing = !isShowing;
-        }
-        if (isShowing)
-        {
-            mask.rectTransform.sizeDelta = Vector2.Lerp(mask.rectTransform.sizeDelta, targetRect, Time.deltaTime * maskSpeed);
+        SceneManager.LoadScene("Level1_Cmajor");
+    }
 
-        }
-        else
-        {
-            mask.rectTransform.sizeDelta = Vector2.Lerp(mask.rectTransform.sizeDelta, originalRect, Time.deltaTime * maskSpeed);
-        }
+    private void OnDestroy()
+    {
+        if (switchCoroutine != null)
+            StopCoroutine(switchCoroutine);
     }
 }
