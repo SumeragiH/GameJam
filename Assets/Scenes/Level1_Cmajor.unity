@@ -3178,9 +3178,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8227676881637691486, guid: 75a32d6435e805a4cb5431a70dae7631, type: 3}
+    - targetCorrespondingSourceObject: {fileID: 4610106699929323797, guid: 75a32d6435e805a4cb5431a70dae7631, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1645059367}
+      addedObject: {fileID: 2038805855}
   m_SourcePrefab: {fileID: 100100000, guid: 75a32d6435e805a4cb5431a70dae7631, type: 3}
 --- !u!1001 &1535930551
 PrefabInstance:
@@ -3558,30 +3558,12 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2222837658220601498, guid: 73318d3389b1c4d47bc7774a10b0ca92, type: 3}
   m_PrefabInstance: {fileID: 1004338193}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1645059362 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8227676881637691486, guid: 75a32d6435e805a4cb5431a70dae7631, type: 3}
-  m_PrefabInstance: {fileID: 1524310132}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1645059367
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1645059362}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e45e4296d2e451e45875dd73f731ddf5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SceneName: Level2_Moonlight
 --- !u!114 &1645059368 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5675729334436927639, guid: 75a32d6435e805a4cb5431a70dae7631, type: 3}
   m_PrefabInstance: {fileID: 1524310132}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1645059362}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: abf295ee0f5dafa49bd132f49b882de9, type: 3}
@@ -4829,6 +4811,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8440244835737741008, guid: e42092f183b5e2b4baf7110b2303bcfa, type: 3}
   m_PrefabInstance: {fileID: 2032323556}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2038805850 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4610106699929323797, guid: 75a32d6435e805a4cb5431a70dae7631, type: 3}
+  m_PrefabInstance: {fileID: 1524310132}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2038805855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038805850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e45e4296d2e451e45875dd73f731ddf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SceneName: Level2_Moonlight
 --- !u!1001 &2051488210
 PrefabInstance:
   m_ObjectHideFlags: 0
